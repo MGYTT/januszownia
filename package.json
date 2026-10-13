@@ -11,13 +11,6 @@
     "lint": "eslint",
     "test": "vitest run"
   },
-  "browserslist": [
-    "chrome >= 100",
-    "edge >= 100",
-    "firefox >= 100",
-    "safari >= 15.6",
-    "ios_saf >= 15.6"
-  ],
   "dependencies": {
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.117.3",

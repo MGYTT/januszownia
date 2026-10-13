@@ -16,31 +16,19 @@ interface PlaceRpcRow {
   id: string;
 
   category_slug: string;
-
   category_name: string;
 
   name: string;
+  description: string | null;
 
-  description:
-    string | null;
-
-  address:
-    string | null;
-
-  city:
-    string | null;
-
+  address: string | null;
+  city: string | null;
   country_code: string;
 
-  latitude:
-    number | string;
+  latitude: number | string;
+  longitude: number | string;
 
-  longitude:
-    number | string;
-
-  verified_at:
-    string | null;
-
+  verified_at: string | null;
   updated_at: string;
 }
 
@@ -94,8 +82,7 @@ export async function GET(
           "Nieprawidłowe granice mapy.",
       },
       {
-        status:
-          400,
+        status: 400,
       },
     );
   }
@@ -118,11 +105,17 @@ export async function GET(
           "Granice mapy są poza dozwolonym zakresem.",
       },
       {
-        status:
-          400,
+        status: 400,
       },
     );
   }
+
+  const query =
+    normalizeQuery(
+      searchParams.get(
+        "q",
+      ),
+    );
 
   const categories =
     parseCategories(
@@ -139,7 +132,7 @@ export async function GET(
     error,
   } =
     await supabase.rpc(
-      "places_in_view",
+      "map_places_in_view",
       {
         min_lat:
           minLat,
@@ -152,6 +145,10 @@ export async function GET(
 
         max_long:
           maxLong,
+
+        search_query:
+          query ||
+          null,
 
         category_slugs:
           categories.length >
@@ -166,7 +163,7 @@ export async function GET(
 
   if (error) {
     console.error(
-      "Błąd RPC places_in_view:",
+      "Błąd RPC map_places_in_view:",
       error,
     );
 
@@ -176,8 +173,7 @@ export async function GET(
           "Nie udało się pobrać miejsc z mapy.",
       },
       {
-        status:
-          500,
+        status: 500,
       },
     );
   }
@@ -206,14 +202,6 @@ export async function GET(
     MapPlacesApiResponse = {
       places,
 
-      /*
-       * RPC ma limit 300.
-       *
-       * Jeśli zwrócił dokładnie
-       * limit, istnieje możliwość,
-       * że w obszarze jest więcej
-       * punktów.
-       */
       truncated:
         rows.length >=
         MAX_RESULTS,
@@ -224,7 +212,7 @@ export async function GET(
     {
       headers: {
         "Cache-Control":
-          "public, s-maxage=30, stale-while-revalidate=60",
+          "public, s-maxage=20, stale-while-revalidate=40",
       },
     },
   );
@@ -261,9 +249,27 @@ function readNumber(
     : null;
 }
 
+function normalizeQuery(
+  value: string | null,
+): string {
+  if (!value) {
+    return "";
+  }
+
+  return value
+    .trim()
+    .replace(
+      /\s+/g,
+      " ",
+    )
+    .slice(
+      0,
+      80,
+    );
+}
+
 function parseCategories(
-  value:
-    string | null,
+  value: string | null,
 ): string[] {
   if (!value) {
     return [];
@@ -274,11 +280,15 @@ function parseCategories(
       value
         .split(",")
         .map(
-          (slug) =>
+          (
+            slug,
+          ) =>
             slug.trim(),
         )
         .filter(
-          (slug) =>
+          (
+            slug,
+          ) =>
             CATEGORY_PATTERN.test(
               slug,
             ),
@@ -291,8 +301,7 @@ function parseCategories(
 }
 
 function parsePlace(
-  row:
-    PlaceRpcRow,
+  row: PlaceRpcRow,
 ): MapExplorerPlace | null {
   const latitude =
     Number(
@@ -338,7 +347,7 @@ function parsePlace(
       row.city,
 
     countryCode:
-      row.country_code,
+      row.country_code.trim(),
 
     latitude,
 

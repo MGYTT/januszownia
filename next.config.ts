@@ -11,11 +11,13 @@ const nextConfig:
     true,
 
   /*
-   * Wymuszamy przetworzenie bibliotek
-   * mapowych przez pipeline Next.js.
+   * Leaflet wykonuje się po stronie
+   * przeglądarki.
    *
-   * Jest to szczególnie ważne dla
-   * kompatybilności klienta mobilnego.
+   * Wymuszamy przejście bibliotek
+   * mapowych przez pipeline Next.js,
+   * zamiast polegać na gotowym kodzie
+   * z node_modules.
    */
   transpilePackages: [
     "leaflet",

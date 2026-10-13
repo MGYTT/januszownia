@@ -2,20 +2,32 @@ type LeafletRuntime =
   typeof import("leaflet");
 
 type LeafletModuleWithDefault = {
-  default?: LeafletRuntime;
+  default?:
+    LeafletRuntime;
 };
 
-type LeafletWindow = Window & {
-  L?: LeafletRuntime;
-};
+type LeafletWindow =
+  Window & {
+    L?:
+      LeafletRuntime;
+  };
 
-let leafletRuntimePromise:
+let leafletPromise:
   | Promise<LeafletRuntime>
-  | null = null;
+  | null =
+  null;
 
-export function loadLeafletWithMarkerCluster():
+let markerClusterPromise:
+  | Promise<LeafletRuntime>
+  | null =
+  null;
+
+export function loadLeaflet():
   Promise<LeafletRuntime> {
-  if (typeof window === "undefined") {
+  if (
+    typeof window ===
+    "undefined"
+  ) {
     return Promise.reject(
       new Error(
         "Leaflet może zostać uruchomiony wyłącznie w przeglądarce.",
@@ -23,48 +35,89 @@ export function loadLeafletWithMarkerCluster():
     );
   }
 
-  if (leafletRuntimePromise) {
-    return leafletRuntimePromise;
+  if (
+    leafletPromise
+  ) {
+    return leafletPromise;
   }
 
-  leafletRuntimePromise =
-    initializeLeafletRuntime();
+  leafletPromise =
+    import(
+      "leaflet"
+    )
+      .then(
+        (
+          module,
+        ) =>
+          normalizeLeafletModule(
+            module,
+          ),
+      )
+      .catch(
+        (
+          error,
+        ) => {
+          leafletPromise =
+            null;
 
-  return leafletRuntimePromise;
+          throw error;
+        },
+      );
+
+  return leafletPromise;
 }
 
-async function initializeLeafletRuntime():
+export function loadLeafletWithMarkerCluster():
   Promise<LeafletRuntime> {
-  const leafletModule =
-    await import("leaflet");
+  if (
+    typeof window ===
+    "undefined"
+  ) {
+    return Promise.reject(
+      new Error(
+        "Leaflet może zostać uruchomiony wyłącznie w przeglądarce.",
+      ),
+    );
+  }
 
-  const moduleWithDefault =
-    leafletModule as unknown as
-      LeafletModuleWithDefault;
+  if (
+    markerClusterPromise
+  ) {
+    return markerClusterPromise;
+  }
 
+  markerClusterPromise =
+    initializeMarkerCluster()
+      .catch(
+        (
+          error,
+        ) => {
+          markerClusterPromise =
+            null;
+
+          throw error;
+        },
+      );
+
+  return markerClusterPromise;
+}
+
+async function initializeMarkerCluster():
+  Promise<LeafletRuntime> {
   const leaflet =
-    (moduleWithDefault.default ??
-      leafletModule) as
-      LeafletRuntime;
+    await loadLeaflet();
 
   const browserWindow =
-    window as LeafletWindow;
+    window as
+      LeafletWindow;
 
   /*
-   * leaflet.markercluster jest starszym
-   * pluginem rozszerzającym obiekt L.
-   *
-   * Ustawiamy globalne L na dokładnie tę
-   * samą instancję Leaflet, której używa
-   * nasza aplikacja.
+   * markercluster jest starszym
+   * pluginem rozszerzającym globalne L.
    */
   browserWindow.L =
     leaflet;
 
-  /*
-   * Plugin musi zostać załadowany
-   * dopiero po Leaflet.
-   */
   await import(
     "leaflet.markercluster"
   );
@@ -81,34 +134,26 @@ async function initializeLeafletRuntime():
       .markerClusterGroup !==
       "function"
   ) {
-    leafletRuntimePromise =
-      null;
-
     throw new Error(
-      "Plugin leaflet.markercluster nie został poprawnie podłączony do instancji Leaflet.",
+      "Plugin leaflet.markercluster nie został poprawnie podłączony do Leaflet.",
     );
   }
 
   return runtimeLeaflet;
 }
 
-export async function loadLeaflet():
-  Promise<LeafletRuntime> {
-  if (typeof window === "undefined") {
-    throw new Error(
-      "Leaflet może zostać uruchomiony wyłącznie w przeglądarce.",
-    );
-  }
-
-  const leafletModule =
-    await import("leaflet");
-
+function normalizeLeafletModule(
+  module:
+    typeof import(
+      "leaflet"
+    ),
+): LeafletRuntime {
   const moduleWithDefault =
-    leafletModule as unknown as
+    module as unknown as
       LeafletModuleWithDefault;
 
   return (
     moduleWithDefault.default ??
-    leafletModule
+    module
   ) as LeafletRuntime;
 }
