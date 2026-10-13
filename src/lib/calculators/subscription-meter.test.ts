@@ -6,6 +6,7 @@ import {
 
 import {
   calculateSubscriptionMeter,
+  type BillingIntervalMonths,
 } from "./subscription-meter";
 
 describe("calculateSubscriptionMeter", () => {
@@ -359,7 +360,7 @@ describe("calculateSubscriptionMeter", () => {
             20,
 
           billingIntervalMonths:
-            2 as 1,
+            2 as BillingIntervalMonths,
 
           analysisMonths:
             12,
