@@ -81,9 +81,11 @@ export function GrillCalculator() {
       null,
     );
 
-  function updateField(
-    field: keyof FormState,
-    value: string,
+  function updateField<
+    Key extends keyof FormState,
+  >(
+    field: Key,
+    value: FormState[Key],
   ) {
     setForm(
       (
