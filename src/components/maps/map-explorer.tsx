@@ -404,9 +404,6 @@ export function MapExplorer({
               categories={
                 initialCategories
               }
-              view={
-                initialView
-              }
               emptyTitle={
                 initialQuery
                   ? "Brak pasujących miejsc"
