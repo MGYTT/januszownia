@@ -571,11 +571,11 @@ function SubscriptionResult({
             </>
           ) : null}
 
-          przez{" "}
+          koszt usługi przypadający na{" "}
           <strong className="text-ink">
             {result.analysisMonths}
           </strong>{" "}
-          mies. pobierze łącznie{" "}
+          mies. wynosi{" "}
           <strong className="text-ink">
             {currencyFormatter.format(
               result.totalCostPln,
@@ -597,10 +597,10 @@ function SubscriptionResult({
         />
 
         <CalculatorMetric
-          label="Pierwsza płatność z opłatą startową"
+          label="Faktycznie pobrane z konta"
           value={
             currencyFormatter.format(
-              result.firstPaymentPln,
+              result.cashOutflowPln,
             )
           }
         />
@@ -629,7 +629,7 @@ function SubscriptionResult({
 
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         <DetailTile
-          label="Pobrane opłaty cykliczne"
+          label="Płatności cykliczne"
           value={
             String(
               result.chargeCount,
@@ -637,10 +637,20 @@ function SubscriptionResult({
           }
           detail={
             currencyFormatter.format(
-              result.recurringCostPln,
+              result.cashRecurringCostPln,
             ) +
-            " łącznie"
+            " pobrane z konta"
           }
+        />
+
+        <DetailTile
+          label="Pierwsze obciążenie"
+          value={
+            currencyFormatter.format(
+              result.firstPaymentPln,
+            )
+          }
+          detail="Pierwsza płatność + opłata startowa"
         />
 
         <DetailTile
@@ -650,25 +660,29 @@ function SubscriptionResult({
               result.annualizedCostPln,
             )
           }
-          detail="Średni koszt miesięczny × 12"
+          detail="Średni koszt usługi × 12"
         />
+      </div>
 
-        <DetailTile
-          label="Koszt na osobę za cały okres"
-          value={
-            currencyFormatter.format(
-              result.costPerPersonForPeriodPln,
-            )
-          }
-          detail={
-            "Po podziale na " +
-            result.peopleSharing +
-            " " +
-            personWord(
-              result.peopleSharing,
-            )
-          }
-        />
+      <div className="mt-3 rounded-2xl border border-line bg-white p-4">
+        <p className="text-sm font-black text-ink">
+          Koszt na osobę za cały analizowany okres
+        </p>
+
+        <p className="mt-2 text-xl font-black text-brand-800">
+          {currencyFormatter.format(
+            result.costPerPersonForPeriodPln,
+          )}
+        </p>
+
+        <p className="mt-1 text-xs leading-5 text-muted">
+          Po podziale na{" "}
+          {result.peopleSharing}{" "}
+          {personWord(
+            result.peopleSharing,
+          )}
+          .
+        </p>
       </div>
 
       {Math.abs(
@@ -745,6 +759,17 @@ function SubscriptionResult({
                       ? "cena startowa"
                       : "cena regularna"}
                   </p>
+
+                  {charge.coveredMonths <
+                  result.billingIntervalMonths ? (
+                    <p className="mt-1 text-xs leading-5 text-muted">
+                      Z tej płatności{" "}
+                      {currencyFormatter.format(
+                        charge.recognizedCostPln,
+                      )}{" "}
+                      przypada na analizowany okres.
+                    </p>
+                  ) : null}
                 </div>
 
                 <p className="self-center text-sm font-black text-brand-800">
@@ -759,7 +784,7 @@ function SubscriptionResult({
       </details>
 
       <p className="mt-4 text-xs leading-5 text-muted">
-        Liczymy płatności, których termin przypada w analizowanym okresie. Jeśli kolejna roczna opłata zaczyna się np. w 13. miesiącu, cała ta płatność wchodzi do kosztu — bo właśnie tyle realnie pobierze usługodawca.
+        Harmonogram pokazuje pełne kwoty faktycznie pobierane z konta. Średni koszt miesięczny, koszt na osobę i koszt jednego użycia rozliczamy proporcjonalnie do części usługi przypadającej na analizowany okres. Dzięki temu przedpłata za przyszłe miesiące nie zawyża opłacalności bieżącego okresu.
       </p>
     </CalculatorResultShell>
   );
