@@ -63,7 +63,10 @@ export default function SubscriptionMeterPage() {
             płatności zgodnie z okresem
             rozliczeniowym: miesięcznym,
             kwartalnym, półrocznym albo
-            rocznym.
+            rocznym. Osobno pokazujemy ile
+            realnie schodzi z konta i jaki
+            koszt usługi przypada na sam
+            analizowany okres.
           </p>
 
           <div className="grid gap-3 sm:grid-cols-2">
@@ -117,13 +120,17 @@ export default function SubscriptionMeterPage() {
 
         <div className="mt-4 space-y-3 text-sm leading-7 text-muted">
           <p>
-            Liczymy pełną płatność, jeżeli
-            jej termin rozpoczyna się w
-            analizowanym okresie. Dlatego
-            przy abonamencie rocznym analiza
-            13 miesięcy obejmie dwie pełne
-            opłaty roczne: pierwszą na
-            początku i drugą w 13. miesiącu.
+            Jeżeli termin płatności wpada w
+            analizowany okres, harmonogram
+            pokazuje pełne obciążenie konta.
+            Jednocześnie koszt użytkowania
+            rozliczamy proporcjonalnie do
+            miesięcy faktycznie należących do
+            analizy. Przykład: roczny plan za
+            240 zł analizowany przez 13
+            miesięcy pokaże 480 zł pobrane z
+            konta, ale 260 zł kosztu usługi
+            przypadającego na te 13 miesięcy.
           </p>
 
           <p>
