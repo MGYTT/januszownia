@@ -36,6 +36,9 @@ export interface SubscriptionCharge {
   basePricePln: number;
   annualMultiplier: number;
   pricePln: number;
+
+  coveredMonths: number;
+  recognizedCostPln: number;
 }
 
 export interface SubscriptionMeterResult {
@@ -47,6 +50,10 @@ export interface SubscriptionMeterResult {
   regularChargeCount: number;
 
   setupFeePln: number;
+
+  cashRecurringCostPln: number;
+  cashOutflowPln: number;
+
   recurringCostPln: number;
   totalCostPln: number;
 
@@ -139,7 +146,8 @@ export function calculateSubscriptionMeter(
     );
 
   const introBillingPeriods =
-    introPricePln === null
+    introPricePln ===
+    null
       ? 0
       : normalizeIntroPeriods(
           input.introBillingPeriods,
@@ -170,7 +178,7 @@ export function calculateSubscriptionMeter(
         input.annualPriceIncreasePercent,
     });
 
-  const recurringCostPln =
+  const cashRecurringCostPln =
     charges.reduce(
       (
         sum,
@@ -180,6 +188,21 @@ export function calculateSubscriptionMeter(
         charge.pricePln,
       0,
     );
+
+  const recurringCostPln =
+    charges.reduce(
+      (
+        sum,
+        charge,
+      ) =>
+        sum +
+        charge.recognizedCostPln,
+      0,
+    );
+
+  const cashOutflowPln =
+    input.setupFeePln +
+    cashRecurringCostPln;
 
   const totalCostPln =
     input.setupFeePln +
@@ -239,15 +262,12 @@ export function calculateSubscriptionMeter(
 
   const targetReached =
     targetCostPerUsePln ===
-    null ||
-    costPerUsePln ===
     null
-      ? targetCostPerUsePln ===
-        null
-        ? null
-        : false
-      : costPerUsePln <=
-        targetCostPerUsePln;
+      ? null
+      : costPerUsePln !==
+          null &&
+        costPerUsePln <=
+          targetCostPerUsePln;
 
   const regularBaselineCostPln =
     charges.reduce(
@@ -266,10 +286,17 @@ export function calculateSubscriptionMeter(
             ),
           );
 
+        const regularPricePln =
+          input.billingPricePln *
+          regularMultiplier;
+
         return (
           sum +
-          input.billingPricePln *
-            regularMultiplier
+          prorateCharge(
+            regularPricePln,
+            charge.coveredMonths,
+            input.billingIntervalMonths,
+          )
         );
       },
       0,
@@ -286,7 +313,11 @@ export function calculateSubscriptionMeter(
         charge,
       ) =>
         sum +
-        charge.basePricePln,
+        prorateCharge(
+          charge.basePricePln,
+          charge.coveredMonths,
+          input.billingIntervalMonths,
+        ),
       0,
     );
 
@@ -321,6 +352,10 @@ export function calculateSubscriptionMeter(
 
     setupFeePln:
       input.setupFeePln,
+
+    cashRecurringCostPln,
+
+    cashOutflowPln,
 
     recurringCostPln,
 
@@ -418,6 +453,17 @@ function buildChargeSchedule({
             completedYears,
           );
 
+    const pricePln =
+      basePricePln *
+      annualMultiplier;
+
+    const coveredMonths =
+      Math.min(
+        billingIntervalMonths,
+        analysisMonths -
+          startMonth,
+      );
+
     charges.push({
       chargeNumber,
 
@@ -436,9 +482,16 @@ function buildChargeSchedule({
 
       annualMultiplier,
 
-      pricePln:
-        basePricePln *
-        annualMultiplier,
+      pricePln,
+
+      coveredMonths,
+
+      recognizedCostPln:
+        prorateCharge(
+          pricePln,
+          coveredMonths,
+          billingIntervalMonths,
+        ),
     });
 
     chargeNumber +=
@@ -446,6 +499,19 @@ function buildChargeSchedule({
   }
 
   return charges;
+}
+
+function prorateCharge(
+  pricePln: number,
+  coveredMonths: number,
+  billingIntervalMonths:
+    BillingIntervalMonths,
+): number {
+  return (
+    pricePln *
+    coveredMonths /
+    billingIntervalMonths
+  );
 }
 
 function assertBillingInterval(
@@ -539,7 +605,8 @@ function assertPositiveFinite(
       0
   ) {
     throw new RangeError(
-      `${label} musi być większa od zera.`,
+      label +
+      " musi być większa od zera.",
     );
   }
 }
@@ -556,7 +623,8 @@ function assertNonNegativeFinite(
       0
   ) {
     throw new RangeError(
-      `${label} nie może być ujemna.`,
+      label +
+      " nie może być ujemna.",
     );
   }
 }
@@ -577,7 +645,12 @@ function assertIntegerInRange(
       max
   ) {
     throw new RangeError(
-      `${label} musi być liczbą całkowitą od ${min} do ${max}.`,
+      label +
+      " musi być liczbą całkowitą od " +
+      min +
+      " do " +
+      max +
+      ".",
     );
   }
 }
