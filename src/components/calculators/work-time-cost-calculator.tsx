@@ -510,30 +510,30 @@ function formatWorkTime(
   minutes:
     number,
 ): string {
+  const roundedMinutes =
+    Math.round(
+      minutes,
+    );
+
   if (
-    minutes <
+    roundedMinutes <
     60
   ) {
     return (
-      numberFormatter.format(
-        minutes,
-      ) +
+      roundedMinutes +
       " min pracy"
     );
   }
 
   const hours =
     Math.floor(
-      minutes /
+      roundedMinutes /
       60,
     );
 
   const remainingMinutes =
-    Math.round(
-      minutes -
-      hours *
-        60,
-    );
+    roundedMinutes %
+    60;
 
   if (
     remainingMinutes ===
