@@ -6,6 +6,10 @@ export type MapCategoryIcon =
   | "sparkles"
   | "tag";
 
+export type MapViewMode =
+  | "list"
+  | "map";
+
 export interface MapCategory {
   id: number;
 
