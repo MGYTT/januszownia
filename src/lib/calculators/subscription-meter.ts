@@ -57,6 +57,7 @@ export interface SubscriptionMeterResult {
 
   costPerPersonForPeriodPln: number;
   averageMonthlyCostPerPersonPln: number;
+  peopleSharing: number;
 
   usesPerMonth: number;
   totalUses: number;
@@ -334,6 +335,9 @@ export function calculateSubscriptionMeter(
     costPerPersonForPeriodPln,
 
     averageMonthlyCostPerPersonPln,
+
+    peopleSharing:
+      input.peopleSharing,
 
     usesPerMonth:
       input.usesPerMonth,
