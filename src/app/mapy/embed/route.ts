@@ -1,13 +1,6 @@
-import {
-  randomBytes,
-} from "node:crypto";
-
 import type {
   NextRequest,
 } from "next/server";
-
-export const runtime =
-  "nodejs";
 
 const DEFAULT_TILE_URL =
   "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -105,11 +98,7 @@ export async function GET(
         6;
 
   const nonce =
-    randomBytes(
-      16,
-    ).toString(
-      "base64",
-    );
+    createNonce();
 
   const config =
     serializeForScript({
@@ -1592,6 +1581,35 @@ function readZoom(
         parsed,
       ),
     ),
+  );
+}
+
+function createNonce():
+  string {
+  const bytes =
+    new Uint8Array(
+      16,
+    );
+
+  crypto.getRandomValues(
+    bytes,
+  );
+
+  let binary =
+    "";
+
+  for (
+    const byte
+    of bytes
+  ) {
+    binary +=
+      String.fromCharCode(
+        byte,
+      );
+  }
+
+  return btoa(
+    binary,
   );
 }
 
