@@ -19,10 +19,15 @@ export interface ToolDefinition {
   slug: string;
   title: string;
   shortTitle: string;
+
+  memeLine: string;
   description: string;
+  whatYouGet: string;
+
   category: ToolCategory;
   status: ToolStatus;
   href?: string;
+
   icon: ToolIconName;
   keywords: string[];
 }
@@ -39,8 +44,14 @@ export const toolCatalog:
       shortTitle:
         "Pizza",
 
+      memeLine:
+        "Bo 50 cm brzmi kozacko, dopóki nie policzysz ile płacisz za placek.",
+
       description:
-        "Porównuje pizze według powierzchni i ceny za 100 cm².",
+        "Porównuje pizze według powierzchni i ceny za 100 cm², więc rozmiar przestaje robić wrażenie bez pokrycia.",
+
+      whatYouGet:
+        "Wiesz, która pizza daje najwięcej jedzenia za złotówkę.",
 
       category:
         "Jedzenie",
@@ -61,6 +72,9 @@ export const toolCatalog:
         "powierzchnia",
         "cena",
         "porównanie",
+        "placek",
+        "duża pizza",
+        "mała pizza",
       ],
     },
 
@@ -74,8 +88,14 @@ export const toolCatalog:
       shortTitle:
         "Tankowanie",
 
+      memeLine:
+        "Tańsze paliwo 8 km dalej? Spokojnie, najpierw odpalamy kalkulator, nie silnik.",
+
       description:
-        "Sprawdza, czy dojazd do tańszej stacji naprawdę przyniesie oszczędność.",
+        "Sprawdza, czy dojazd do tańszej stacji faktycznie daje oszczędność po uwzględnieniu paliwa zużytego po drodze.",
+
+      whatYouGet:
+        "Wiesz, czy jedziesz po oszczędność, czy tylko po dodatkowe kilometry.",
 
       category:
         "Samochód",
@@ -98,6 +118,8 @@ export const toolCatalog:
         "samochód",
         "spalanie",
         "dojazd",
+        "tańsze paliwo",
+        "oszczędność",
       ],
     },
 
@@ -111,8 +133,14 @@ export const toolCatalog:
       shortTitle:
         "Cena jednostkowa",
 
+      memeLine:
+        "Większe opakowanie nie zawsze znaczy większy cebulowy sukces.",
+
       description:
-        "Porównuje produkty według ceny za kilogram, litr albo sztukę.",
+        "Porównuje produkty według ceny za kilogram, litr albo sztukę, niezależnie od wielkości opakowania.",
+
+      whatYouGet:
+        "Wiesz, który produkt naprawdę jest tańszy w przeliczeniu na tę samą jednostkę.",
 
       category:
         "Zakupy",
@@ -135,6 +163,8 @@ export const toolCatalog:
         "produkt",
         "porównanie",
         "opakowanie",
+        "cena za kg",
+        "cena za litr",
       ],
     },
 
@@ -148,8 +178,14 @@ export const toolCatalog:
       shortTitle:
         "Promocjometr",
 
+      memeLine:
+        "Czerwona naklejka to jeszcze nie oszczędność. Czasem to tylko czerwony kartonik.",
+
       description:
-        "Liczy rzeczywistą obniżkę, oszczędność dla wielu sztuk i porównuje cenę z podaną najniższą ceną z 30 dni.",
+        "Liczy rzeczywistą obniżkę, oszczędność dla wielu sztuk i pozwala porównać cenę z podaną najniższą ceną z 30 dni.",
+
+      whatYouGet:
+        "Wiesz, ile naprawdę oszczędzasz i czy procent na etykiecie robi robotę.",
 
       category:
         "Zakupy",
@@ -173,6 +209,8 @@ export const toolCatalog:
         "30 dni",
         "najniższa cena",
         "oszczędność",
+        "procent",
+        "okazja",
       ],
     },
 
@@ -186,8 +224,14 @@ export const toolCatalog:
       shortTitle:
         "Prądożerca",
 
+      memeLine:
+        "Wyłączone, ale świeci dioda? Portfel już wie, że jednak nie całkiem wyłączone.",
+
       description:
-        "Oblicza zużycie energii i koszt pracy urządzenia na dzień, miesiąc i rok, również z trybem czuwania.",
+        "Oblicza zużycie energii i koszt pracy urządzenia na dzień, miesiąc i rok, również z poborem w trybie czuwania.",
+
+      whatYouGet:
+        "Wiesz, ile urządzenie zjada kWh i złotówek, także wtedy, gdy tylko sobie czuwa.",
 
       category:
         "Dom",
@@ -212,6 +256,7 @@ export const toolCatalog:
         "urządzenie",
         "czuwanie",
         "standby",
+        "koszt prądu",
       ],
     },
 
@@ -225,8 +270,14 @@ export const toolCatalog:
       shortTitle:
         "Prysznicometr",
 
+      memeLine:
+        "Jeszcze tylko minutka pod ciepłą wodą — powiedział człowiek osiem minut temu.",
+
       description:
-        "Liczy zużycie wody, energię potrzebną do jej podgrzania oraz koszt prysznica, miesiąca i roku.",
+        "Liczy zużycie wody, energię potrzebną do jej podgrzania oraz koszt jednego prysznica, miesiąca i roku.",
+
+      whatYouGet:
+        "Wiesz, ile kosztuje Twoje „jeszcze chwilkę” pod prysznicem.",
 
       category:
         "Dom",
@@ -249,6 +300,7 @@ export const toolCatalog:
         "energia",
         "ciepła woda",
         "przepływ",
+        "rachunek za wodę",
       ],
     },
 
@@ -262,8 +314,14 @@ export const toolCatalog:
       shortTitle:
         "Grillometr",
 
+      memeLine:
+        "Lepiej wrócić z grilla z kiełbasą niż wracać do sklepu po kiełbasę w trakcie grilla.",
+
       description:
-        "Szacuje ilość jedzenia, napojów, paliwa do grilla i budżet na podstawie liczby gości oraz wpisanych cen.",
+        "Szacuje ilość jedzenia, napojów, paliwa do grilla i budżet na podstawie liczby gości oraz cen wpisanych przez użytkownika.",
+
+      whatYouGet:
+        "Dostajesz praktyczną listę ilości i orientacyjny budżet na całą ekipę.",
 
       category:
         "Jedzenie",
@@ -283,6 +341,10 @@ export const toolCatalog:
         "impreza",
         "kiełbasa",
         "budżet",
+        "goście",
+        "napoje",
+        "węgiel",
+        "brykiet",
       ],
     },
 
@@ -296,8 +358,14 @@ export const toolCatalog:
       shortTitle:
         "Godziny pracy",
 
+      memeLine:
+        "Cena 2999 zł boli inaczej, gdy zobaczysz ją jako trzydzieści kilka godzin życia.",
+
       description:
         "Przelicza cenę zakupu na minuty, godziny i dni pracy na podstawie własnego dochodu netto.",
+
+      whatYouGet:
+        "Widzisz cenę nie tylko w złotówkach, ale też w czasie własnej pracy.",
 
       category:
         "Pieniądze",
@@ -317,6 +385,10 @@ export const toolCatalog:
         "zarobki",
         "godziny",
         "zakup",
+        "czas pracy",
+        "dochód",
+        "netto",
+        "ile pracuję",
       ],
     },
 
@@ -330,8 +402,14 @@ export const toolCatalog:
       shortTitle:
         "Koszt trasy",
 
+      memeLine:
+        "„To tylko 200 km” brzmi taniej, zanim doliczysz powrót, autostradę i parking.",
+
       description:
         "Liczy paliwo, opłaty, parking, pełny koszt przejazdu oraz koszt przypadający na osobę.",
+
+      whatYouGet:
+        "Wiesz, ile naprawdę kosztuje wyjazd i jak uczciwie podzielić koszt między pasażerów.",
 
       category:
         "Podróże",
@@ -351,6 +429,10 @@ export const toolCatalog:
         "samochód",
         "paliwo",
         "koszt",
+        "parking",
+        "autostrada",
+        "pasażer",
+        "wyjazd",
       ],
     },
   ];
