@@ -6,54 +6,41 @@ import {
 } from "react";
 
 import {
+  CalculatorActions,
+  CalculatorError,
+  CalculatorField,
+  CalculatorMetric,
+  CalculatorResultShell,
+  CalculatorShell,
+} from "@/components/calculators/calculator-ui";
+
+import {
   calculateWorkTimeCost,
   type WorkTimeCostResult,
 } from "@/lib/calculators/work-time-cost";
 
 interface FormState {
-  itemPrice:
-    string;
-
-  monthlyIncome:
-    string;
-
-  monthlyHours:
-    string;
-
-  workdayHours:
-    string;
+  itemPrice: string;
+  monthlyIncome: string;
+  monthlyHours: string;
+  workdayHours: string;
 }
 
-const initialForm:
-  FormState = {
-    itemPrice:
-      "",
-
-    monthlyIncome:
-      "",
-
-    monthlyHours:
-      "160",
-
-    workdayHours:
-      "8",
-  };
+const initialForm: FormState = {
+  itemPrice: "",
+  monthlyIncome: "",
+  monthlyHours: "160",
+  workdayHours: "8",
+};
 
 const currencyFormatter =
   new Intl.NumberFormat(
     "pl-PL",
     {
-      style:
-        "currency",
-
-      currency:
-        "PLN",
-
-      minimumFractionDigits:
-        2,
-
-      maximumFractionDigits:
-        2,
+      style: "currency",
+      currency: "PLN",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     },
   );
 
@@ -61,8 +48,7 @@ const numberFormatter =
   new Intl.NumberFormat(
     "pl-PL",
     {
-      maximumFractionDigits:
-        2,
+      maximumFractionDigits: 2,
     },
   );
 
@@ -92,30 +78,20 @@ export function WorkTimeCostCalculator() {
     );
 
   function updateField(
-    field:
-      keyof FormState,
-
-    value:
-      string,
+    field: keyof FormState,
+    value: string,
   ) {
     setForm(
       (
         current,
       ) => ({
         ...current,
-
-        [field]:
-          value,
+        [field]: value,
       }),
     );
 
-    setResult(
-      null,
-    );
-
-    setError(
-      null,
-    );
+    setResult(null);
+    setError(null);
   }
 
   function handleSubmit(
@@ -152,48 +128,35 @@ export function WorkTimeCostCalculator() {
         nextResult,
       );
 
-      setError(
-        null,
-      );
+      setError(null);
     } catch (
       unknownError
     ) {
-      setResult(
-        null,
-      );
+      setResult(null);
 
       setError(
-        unknownError instanceof
-          Error
+        unknownError instanceof Error
           ? unknownError.message
-          : "Nie udało się wykonać obliczenia.",
+          : "Nie udało się przeliczyć ceny na czas pracy.",
       );
     }
   }
 
   function reset() {
-    setForm(
-      initialForm,
-    );
-
-    setResult(
-      null,
-    );
-
-    setError(
-      null,
-    );
+    setForm(initialForm);
+    setResult(null);
+    setError(null);
   }
 
   return (
-    <div className="rounded-[2rem] border border-line bg-white p-5 shadow-card sm:p-7 lg:p-8">
+    <CalculatorShell intro="Cena w złotówkach to jedno. Cena w godzinach własnej pracy potrafi wyglądać trochę bardziej osobiście.">
       <form
         onSubmit={
           handleSubmit
         }
       >
-        <div className="grid gap-5 md:grid-cols-2">
-          <NumberField
+        <div className="grid gap-4 md:grid-cols-2">
+          <CalculatorField
             id="item-price"
             label="Cena zakupu"
             value={
@@ -212,7 +175,7 @@ export function WorkTimeCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="monthly-income"
             label="Miesięczny dochód netto"
             value={
@@ -232,7 +195,7 @@ export function WorkTimeCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="monthly-hours"
             label="Godziny pracy w miesiącu"
             value={
@@ -251,7 +214,7 @@ export function WorkTimeCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="workday-hours"
             label="Twój typowy dzień pracy"
             value={
@@ -271,131 +234,28 @@ export function WorkTimeCostCalculator() {
           />
         </div>
 
-        {error ? (
-          <div
-            role="alert"
-            className="mt-6 rounded-2xl border border-danger-600/20 bg-danger-50 px-4 py-3 text-sm font-medium text-danger-600"
-          >
-            {error}
-          </div>
-        ) : null}
-
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-          <button
-            type="submit"
-            className="min-h-12 flex-1 rounded-button bg-brand-600 px-5 py-3 font-bold text-white shadow-sm transition hover:bg-brand-700 active:translate-y-px"
-          >
-            Przelicz na czas pracy
-          </button>
-
-          <button
-            type="button"
-            onClick={
-              reset
-            }
-            className="min-h-12 rounded-button border border-line bg-white px-5 py-3 font-semibold text-muted transition hover:bg-canvas hover:text-ink"
-          >
-            Wyczyść
-          </button>
-        </div>
-      </form>
-
-      <div
-        aria-live="polite"
-        className="mt-7"
-      >
-        {result ? (
-          <WorkTimeResult
-            result={
-              result
-            }
-          />
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-function NumberField({
-  id,
-  label,
-  value,
-  placeholder,
-  suffix,
-  help,
-  onChange,
-}: {
-  id:
-    string;
-
-  label:
-    string;
-
-  value:
-    string;
-
-  placeholder:
-    string;
-
-  suffix:
-    string;
-
-  help?:
-    string;
-
-  onChange:
-    (
-      value:
-        string,
-    ) => void;
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={
-          id
-        }
-        className="mb-2 block text-sm font-bold"
-      >
-        {label}
-      </label>
-
-      <div className="relative">
-        <input
-          id={
-            id
+        <CalculatorError
+          message={
+            error
           }
-          type="text"
-          inputMode="decimal"
-          value={
-            value
-          }
-          placeholder={
-            placeholder
-          }
-          onChange={
-            (
-              event,
-            ) =>
-              onChange(
-                event.target
-                  .value,
-              )
-          }
-          className="h-12 w-full rounded-xl border border-line bg-canvas px-4 pr-16 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
         />
 
-        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-muted">
-          {suffix}
-        </span>
-      </div>
+        <CalculatorActions
+          submitLabel="Przelicz cenę na czas życia"
+          onReset={
+            reset
+          }
+        />
+      </form>
 
-      {help ? (
-        <p className="mt-2 text-xs leading-5 text-muted">
-          {help}
-        </p>
+      {result ? (
+        <WorkTimeResult
+          result={
+            result
+          }
+        />
       ) : null}
-    </div>
+    </CalculatorShell>
   );
 }
 
@@ -405,29 +265,26 @@ function WorkTimeResult({
   result:
     WorkTimeCostResult;
 }) {
-  const timeLabel =
-    formatWorkTime(
-      result.workMinutesRequired,
-    );
+  const tone =
+    result.monthlyIncomeSharePercent >
+    100
+      ? "warning"
+      : "good";
 
   return (
-    <section className="rounded-card border border-brand-200 bg-brand-50 p-5 sm:p-6">
-      <p className="text-xs font-black uppercase tracking-[0.14em] text-brand-700">
-        IleNaToRobisz?
-      </p>
-
-      <h2 className="mt-2 text-3xl font-black text-brand-900">
-        {timeLabel}
-      </h2>
-
-      <p className="mt-2 text-sm leading-6 text-brand-900">
-        Tyle czasu pracy odpowiada cenie
-        zakupu przy wpisanym dochodzie
-        netto i liczbie godzin pracy.
-      </p>
-
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <ResultTile
+    <CalculatorResultShell
+      tone={
+        tone
+      }
+      title={
+        formatWorkTime(
+          result.workMinutesRequired,
+        )
+      }
+      lead="Tyle czasu pracy odpowiada cenie zakupu przy wpisanym dochodzie netto i liczbie godzin pracy."
+    >
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <CalculatorMetric
           label="Dochód netto / godzinę"
           value={
             currencyFormatter.format(
@@ -436,7 +293,7 @@ function WorkTimeResult({
           }
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Godziny pracy"
           value={
             numberFormatter.format(
@@ -444,9 +301,10 @@ function WorkTimeResult({
             ) +
             " h"
           }
+          accent
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Dni pracy"
           value={
             numberFormatter.format(
@@ -455,7 +313,7 @@ function WorkTimeResult({
           }
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Część miesięcznego dochodu"
           value={
             numberFormatter.format(
@@ -466,10 +324,9 @@ function WorkTimeResult({
         />
       </div>
 
-      <div className="mt-5 rounded-2xl border border-line bg-white p-4">
-        <p className="text-sm font-black">
-          Po zakupie względem jednego
-          miesięcznego dochodu
+      <div className="mt-4 rounded-2xl border border-line bg-white p-4">
+        <p className="text-xs font-black uppercase tracking-[0.08em] text-muted">
+          Po zakupie względem jednego miesiąca
         </p>
 
         <p className="mt-2 text-xl font-black text-brand-800">
@@ -479,44 +336,15 @@ function WorkTimeResult({
         </p>
 
         <p className="mt-2 text-xs leading-5 text-muted">
-          To porównanie ceny z dochodem
-          netto, a nie z faktycznym
-          dochodem rozporządzalnym.
-          Kalkulator nie odejmuje czynszu,
-          jedzenia, rat ani innych kosztów
-          życia.
+          To nie jest dochód rozporządzalny. Nie odejmujemy czynszu, jedzenia, rat ani innych kosztów życia — porównujemy wyłącznie cenę z dochodem netto.
         </p>
       </div>
-    </section>
-  );
-}
-
-function ResultTile({
-  label,
-  value,
-}: {
-  label:
-    string;
-
-  value:
-    string;
-}) {
-  return (
-    <div className="rounded-2xl border border-line bg-white p-4">
-      <p className="text-xs leading-5 text-muted">
-        {label}
-      </p>
-
-      <p className="mt-1 text-lg font-black text-brand-800">
-        {value}
-      </p>
-    </div>
+    </CalculatorResultShell>
   );
 }
 
 function formatWorkTime(
-  minutes:
-    number,
+  minutes: number,
 ): string {
   const roundedMinutes =
     Math.round(
@@ -562,8 +390,7 @@ function formatWorkTime(
 }
 
 function parsePolishDecimal(
-  value:
-    string,
+  value: string,
 ): number {
   const normalized =
     value

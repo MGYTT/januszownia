@@ -88,7 +88,8 @@ export function calculateGrillPlan(
     input.children;
 
   if (
-    guests <= 0
+    guests <=
+    0
   ) {
     throw new RangeError(
       "Dodaj co najmniej jedną osobę.",
@@ -313,10 +314,11 @@ function assertPrices(
       !Number.isFinite(
         value,
       ) ||
-      value < 0
+      value <
+        0
     ) {
       throw new RangeError(
-        `${label} nie może być ujemna.`,
+        label + " nie może być ujemna.",
       );
     }
   }
@@ -330,11 +332,13 @@ function assertGuestCount(
     !Number.isInteger(
       value,
     ) ||
-    value < 0 ||
-    value > 200
+    value <
+      0 ||
+    value >
+      200
   ) {
     throw new RangeError(
-      `${label} musi być liczbą całkowitą od 0 do 200.`,
+      label + " musi być liczbą całkowitą od 0 do 200.",
     );
   }
 }

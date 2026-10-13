@@ -6,6 +6,16 @@ import {
 } from "react";
 
 import {
+  CalculatorActions,
+  CalculatorError,
+  CalculatorField,
+  CalculatorGroup,
+  CalculatorMetric,
+  CalculatorResultShell,
+  CalculatorShell,
+} from "@/components/calculators/calculator-ui";
+
+import {
   calculateRouteCost,
   type RouteCostResult,
 } from "@/lib/calculators/route-cost";
@@ -164,7 +174,7 @@ export default function RouteCostCalculator() {
       setError(
         unknownError instanceof Error
           ? unknownError.message
-          : "Nie udało się wykonać obliczenia.",
+          : "Nie udało się policzyć kosztu trasy.",
       );
     }
   }
@@ -176,306 +186,231 @@ export default function RouteCostCalculator() {
   }
 
   return (
-    <div className="rounded-[2rem] border border-line bg-white p-5 shadow-card sm:p-7 lg:p-8">
+    <CalculatorShell intro="„To tylko parę kilometrów” brzmi niewinnie, dopóki nie doliczysz powrotu, autostrady i parkingu.">
       <form
         onSubmit={
           handleSubmit
         }
       >
-        <div className="grid gap-5 md:grid-cols-2">
-          <NumberField
-            id="route-distance"
-            label="Dystans w jedną stronę"
-            value={
-              form.oneWayDistanceKm
-            }
-            placeholder="np. 145"
-            suffix="km"
-            onChange={
-              (
-                value,
-              ) =>
-                updateField(
-                  "oneWayDistanceKm",
-                  value,
-                )
-            }
-          />
-
-          <div>
-            <span className="mb-2 block text-sm font-bold">
-              Rodzaj przejazdu
-            </span>
-
-            <button
-              type="button"
-              aria-pressed={
-                form.roundTrip
+        <CalculatorGroup
+          title="Trasa i paliwo"
+          badge="podstawa"
+        >
+          <div className="grid gap-4 md:grid-cols-2">
+            <CalculatorField
+              id="route-distance"
+              label="Dystans w jedną stronę"
+              value={
+                form.oneWayDistanceKm
               }
-              onClick={
-                () =>
+              placeholder="np. 145"
+              suffix="km"
+              onChange={
+                (
+                  value,
+                ) =>
                   updateField(
-                    "roundTrip",
-                    !form.roundTrip,
+                    "oneWayDistanceKm",
+                    value,
                   )
               }
-              className={[
-                "flex min-h-12 w-full items-center justify-between rounded-xl border px-4 text-left transition",
-                form.roundTrip
-                  ? "border-brand-300 bg-brand-50"
-                  : "border-line bg-canvas",
-              ].join(
-                " ",
-              )}
-            >
-              <span>
-                <span className="block text-sm font-black">
-                  {form.roundTrip
-                    ? "Tam i z powrotem"
-                    : "Tylko w jedną stronę"}
-                </span>
+            />
 
-                <span className="mt-0.5 block text-xs text-muted">
-                  Kliknij, aby zmienić
-                </span>
+            <div>
+              <span className="mb-2 block text-sm font-bold text-ink">
+                Rodzaj przejazdu
               </span>
 
-              <span
-                aria-hidden="true"
-                className="text-lg"
+              <button
+                type="button"
+                aria-pressed={
+                  form.roundTrip
+                }
+                onClick={
+                  () =>
+                    updateField(
+                      "roundTrip",
+                      !form.roundTrip,
+                    )
+                }
+                className={[
+                  "flex min-h-12 w-full items-center justify-between rounded-xl border px-4 text-left transition",
+                  form.roundTrip
+                    ? "border-brand-300 bg-brand-50"
+                    : "border-line bg-white hover:bg-canvas",
+                ].join(
+                  " ",
+                )}
               >
-                ↔
-              </span>
-            </button>
+                <span>
+                  <span className="block text-sm font-black text-ink">
+                    {form.roundTrip
+                      ? "Tam i z powrotem"
+                      : "Tylko w jedną stronę"}
+                  </span>
+
+                  <span className="mt-0.5 block text-xs text-muted">
+                    Kliknij, aby zmienić
+                  </span>
+                </span>
+
+                <span
+                  aria-hidden="true"
+                  className="text-lg text-brand-700"
+                >
+                  ↔
+                </span>
+              </button>
+            </div>
+
+            <CalculatorField
+              id="route-consumption"
+              label="Średnie spalanie"
+              value={
+                form.consumptionLitersPer100Km
+              }
+              placeholder="np. 6,8"
+              suffix="l/100 km"
+              onChange={
+                (
+                  value,
+                ) =>
+                  updateField(
+                    "consumptionLitersPer100Km",
+                    value,
+                  )
+              }
+            />
+
+            <CalculatorField
+              id="route-fuel-price"
+              label="Cena paliwa"
+              value={
+                form.fuelPricePlnPerLiter
+              }
+              placeholder="np. 6,35"
+              suffix="zł/l"
+              onChange={
+                (
+                  value,
+                ) =>
+                  updateField(
+                    "fuelPricePlnPerLiter",
+                    value,
+                  )
+              }
+            />
           </div>
+        </CalculatorGroup>
 
-          <NumberField
-            id="route-consumption"
-            label="Średnie spalanie"
-            value={
-              form.consumptionLitersPer100Km
-            }
-            placeholder="np. 6,8"
-            suffix="l/100 km"
-            onChange={
-              (
-                value,
-              ) =>
-                updateField(
-                  "consumptionLitersPer100Km",
-                  value,
-                )
-            }
-          />
+        <div className="mt-4">
+          <CalculatorGroup
+            title="Dodatkowe koszty"
+            badge="opcjonalne"
+          >
+            <div className="grid gap-4 md:grid-cols-2">
+              <CalculatorField
+                id="route-tolls"
+                label="Opłaty drogowe"
+                value={
+                  form.tollsPln
+                }
+                placeholder="0"
+                suffix="zł"
+                onChange={
+                  (
+                    value,
+                  ) =>
+                    updateField(
+                      "tollsPln",
+                      value,
+                    )
+                }
+              />
 
-          <NumberField
-            id="route-fuel-price"
-            label="Cena paliwa"
-            value={
-              form.fuelPricePlnPerLiter
-            }
-            placeholder="np. 6,35"
-            suffix="zł/l"
-            onChange={
-              (
-                value,
-              ) =>
-                updateField(
-                  "fuelPricePlnPerLiter",
-                  value,
-                )
-            }
-          />
+              <CalculatorField
+                id="route-parking"
+                label="Parking"
+                value={
+                  form.parkingPln
+                }
+                placeholder="0"
+                suffix="zł"
+                onChange={
+                  (
+                    value,
+                  ) =>
+                    updateField(
+                      "parkingPln",
+                      value,
+                    )
+                }
+              />
 
-          <NumberField
-            id="route-tolls"
-            label="Opłaty drogowe"
-            value={
-              form.tollsPln
-            }
-            placeholder="0"
-            suffix="zł"
-            onChange={
-              (
-                value,
-              ) =>
-                updateField(
-                  "tollsPln",
-                  value,
-                )
-            }
-          />
+              <CalculatorField
+                id="route-other"
+                label="Inne koszty"
+                value={
+                  form.otherCostsPln
+                }
+                placeholder="0"
+                suffix="zł"
+                onChange={
+                  (
+                    value,
+                  ) =>
+                    updateField(
+                      "otherCostsPln",
+                      value,
+                    )
+                }
+              />
 
-          <NumberField
-            id="route-parking"
-            label="Parking"
-            value={
-              form.parkingPln
-            }
-            placeholder="0"
-            suffix="zł"
-            onChange={
-              (
-                value,
-              ) =>
-                updateField(
-                  "parkingPln",
-                  value,
-                )
-            }
-          />
-
-          <NumberField
-            id="route-other"
-            label="Inne koszty przejazdu"
-            value={
-              form.otherCostsPln
-            }
-            placeholder="0"
-            suffix="zł"
-            onChange={
-              (
-                value,
-              ) =>
-                updateField(
-                  "otherCostsPln",
-                  value,
-                )
-            }
-          />
-
-          <NumberField
-            id="route-travelers"
-            label="Liczba osób dzielących koszt"
-            value={
-              form.travelers
-            }
-            placeholder="1"
-            suffix="os."
-            inputMode="numeric"
-            onChange={
-              (
-                value,
-              ) =>
-                updateField(
-                  "travelers",
-                  value,
-                )
-            }
-          />
+              <CalculatorField
+                id="route-travelers"
+                label="Osoby dzielące koszt"
+                value={
+                  form.travelers
+                }
+                placeholder="1"
+                suffix="os."
+                inputMode="numeric"
+                onChange={
+                  (
+                    value,
+                  ) =>
+                    updateField(
+                      "travelers",
+                      value,
+                    )
+                }
+              />
+            </div>
+          </CalculatorGroup>
         </div>
 
-        {error ? (
-          <div
-            role="alert"
-            className="mt-6 rounded-2xl border border-danger-600/20 bg-danger-50 px-4 py-3 text-sm font-medium text-danger-600"
-          >
-            {error}
-          </div>
-        ) : null}
-
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-          <button
-            type="submit"
-            className="min-h-12 flex-1 rounded-button bg-brand-600 px-5 py-3 font-bold text-white shadow-sm transition hover:bg-brand-700 active:translate-y-px"
-          >
-            Policz koszt trasy
-          </button>
-
-          <button
-            type="button"
-            onClick={
-              reset
-            }
-            className="min-h-12 rounded-button border border-line bg-white px-5 py-3 font-semibold text-muted transition hover:bg-canvas hover:text-ink"
-          >
-            Wyczyść
-          </button>
-        </div>
-      </form>
-
-      <div
-        aria-live="polite"
-        className="mt-7"
-      >
-        {result ? (
-          <RouteCostResultView
-            result={
-              result
-            }
-          />
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-function NumberField({
-  id,
-  label,
-  value,
-  placeholder,
-  suffix,
-  inputMode = "decimal",
-  onChange,
-}: {
-  id: string;
-  label: string;
-  value: string;
-  placeholder: string;
-  suffix: string;
-
-  inputMode?:
-    | "decimal"
-    | "numeric";
-
-  onChange:
-    (
-      value: string,
-    ) => void;
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={
-          id
-        }
-        className="mb-2 block text-sm font-bold"
-      >
-        {label}
-      </label>
-
-      <div className="relative">
-        <input
-          id={
-            id
+        <CalculatorError
+          message={
+            error
           }
-          type="text"
-          inputMode={
-            inputMode
-          }
-          value={
-            value
-          }
-          placeholder={
-            placeholder
-          }
-          onChange={
-            (
-              event,
-            ) =>
-              onChange(
-                event.target.value,
-              )
-          }
-          className="h-12 w-full rounded-xl border border-line bg-canvas px-4 pr-24 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
         />
 
-        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-muted">
-          {suffix}
-        </span>
-      </div>
-    </div>
+        <CalculatorActions
+          submitLabel="Policz koszt całej wyprawy"
+          onReset={
+            reset
+          }
+        />
+      </form>
+
+      {result ? (
+        <RouteCostResultView
+          result={
+            result
+          }
+        />
+      ) : null}
+    </CalculatorShell>
   );
 }
 
@@ -486,25 +421,27 @@ function RouteCostResultView({
     RouteCostResult;
 }) {
   return (
-    <section className="rounded-card border border-brand-200 bg-brand-50 p-5 sm:p-6">
-      <p className="text-xs font-black uppercase tracking-[0.14em] text-brand-700">
-        Koszt trasy
-      </p>
-
-      <div className="mt-2 flex flex-wrap items-end gap-x-3 gap-y-1">
-        <p className="text-3xl font-black text-brand-900">
-          {currencyFormatter.format(
-            result.totalCostPln,
-          )}
-        </p>
-
-        <p className="pb-1 text-sm font-bold text-brand-700">
-          łącznie
-        </p>
-      </div>
-
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <ResultTile
+    <CalculatorResultShell
+      title={
+        currencyFormatter.format(
+          result.totalCostPln,
+        ) +
+        " za trasę"
+      }
+      lead={
+        <>
+          Przy podanej liczbie osób wychodzi{" "}
+          <strong className="text-ink">
+            {currencyFormatter.format(
+              result.costPerTravelerPln,
+            )}
+          </strong>{" "}
+          na osobę.
+        </>
+      }
+    >
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <CalculatorMetric
           label="Łączny dystans"
           value={
             numberFormatter.format(
@@ -514,7 +451,7 @@ function RouteCostResultView({
           }
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Potrzebne paliwo"
           value={
             numberFormatter.format(
@@ -524,16 +461,17 @@ function RouteCostResultView({
           }
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Koszt na osobę"
           value={
             currencyFormatter.format(
               result.costPerTravelerPln,
             )
           }
+          accent
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Koszt na kilometr"
           value={
             currencyFormatter.format(
@@ -543,7 +481,7 @@ function RouteCostResultView({
         />
       </div>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <BreakdownTile
           label="Paliwo"
           value={
@@ -570,34 +508,10 @@ function RouteCostResultView({
         />
       </div>
 
-      <p className="mt-5 text-xs leading-5 text-muted">
-        Kalkulator liczy koszty wpisane
-        przez użytkownika. Nie uwzględnia
-        amortyzacji, opon, serwisu,
-        ubezpieczenia ani wartości czasu
-        podróży.
+      <p className="mt-4 text-xs leading-5 text-muted">
+        Nie doliczamy amortyzacji, serwisu, opon, ubezpieczenia ani wartości czasu. To koszt konkretnego przejazdu, nie pełny koszt posiadania auta.
       </p>
-    </section>
-  );
-}
-
-function ResultTile({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-line bg-white p-4">
-      <p className="text-xs leading-5 text-muted">
-        {label}
-      </p>
-
-      <p className="mt-1 text-lg font-black text-brand-800">
-        {value}
-      </p>
-    </div>
+    </CalculatorResultShell>
   );
 }
 
@@ -612,7 +526,7 @@ function BreakdownTile({
 }) {
   return (
     <div className="rounded-2xl border border-line bg-white p-4">
-      <p className="text-sm font-black">
+      <p className="text-sm font-black text-ink">
         {label}
       </p>
 
@@ -681,7 +595,8 @@ function parsePositiveInteger(
     !Number.isInteger(
       parsed,
     ) ||
-    parsed <= 0
+    parsed <=
+      0
   ) {
     throw new Error(
       "Liczba osób musi być dodatnią liczbą całkowitą.",

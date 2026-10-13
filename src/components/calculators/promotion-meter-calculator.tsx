@@ -6,6 +6,15 @@ import {
 } from "react";
 
 import {
+  CalculatorActions,
+  CalculatorError,
+  CalculatorField,
+  CalculatorMetric,
+  CalculatorResultShell,
+  CalculatorShell,
+} from "@/components/calculators/calculator-ui";
+
+import {
   calculatePromotionMeter,
   type PromotionMeterResult,
 } from "@/lib/calculators/promotion-meter";
@@ -69,10 +78,8 @@ export function PromotionMeterCalculator() {
     );
 
   function updateField(
-    field:
-      keyof FormState,
-    value:
-      string,
+    field: keyof FormState,
+    value: string,
   ) {
     setForm(
       (
@@ -135,10 +142,9 @@ export function PromotionMeterCalculator() {
       setResult(null);
 
       setError(
-        unknownError instanceof
-          Error
+        unknownError instanceof Error
           ? unknownError.message
-          : "Nie udało się wykonać obliczenia.",
+          : "Nie udało się sprawdzić promocji.",
       );
     }
   }
@@ -150,14 +156,14 @@ export function PromotionMeterCalculator() {
   }
 
   return (
-    <div className="rounded-[2rem] border border-line bg-white p-5 shadow-card sm:p-7 lg:p-8">
+    <CalculatorShell intro="Czerwona etykieta może krzyczeć PROMOCJA. My spokojnie sprawdzimy, ile złotówek naprawdę zostaje w kieszeni.">
       <form
         onSubmit={
           handleSubmit
         }
       >
-        <div className="grid gap-5 md:grid-cols-2">
-          <NumberField
+        <div className="grid gap-4 md:grid-cols-2">
+          <CalculatorField
             id="regular-price"
             label="Cena regularna"
             value={
@@ -176,7 +182,7 @@ export function PromotionMeterCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="promotional-price"
             label="Cena promocyjna"
             value={
@@ -195,7 +201,7 @@ export function PromotionMeterCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="quantity"
             label="Ile sztuk kupujesz?"
             value={
@@ -215,7 +221,7 @@ export function PromotionMeterCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="lowest-30-days"
             label="Najniższa cena z 30 dni"
             value={
@@ -223,7 +229,7 @@ export function PromotionMeterCalculator() {
             }
             placeholder="opcjonalnie"
             suffix="zł"
-            help="Jeżeli masz tę wartość z etykiety sklepu, możemy matematycznie porównać z nią aktualną cenę."
+            help="Jeżeli masz tę wartość z etykiety sklepu, porównamy ją matematycznie z aktualną ceną."
             onChange={
               (
                 value,
@@ -236,125 +242,28 @@ export function PromotionMeterCalculator() {
           />
         </div>
 
-        {error ? (
-          <div
-            role="alert"
-            className="mt-6 rounded-2xl border border-danger-600/20 bg-danger-50 px-4 py-3 text-sm font-medium text-danger-600"
-          >
-            {error}
-          </div>
-        ) : null}
-
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-          <button
-            type="submit"
-            className="min-h-12 flex-1 rounded-button bg-brand-600 px-5 py-3 font-bold text-white shadow-sm transition hover:bg-brand-700 active:translate-y-px"
-          >
-            Sprawdź promocję
-          </button>
-
-          <button
-            type="button"
-            onClick={
-              reset
-            }
-            className="min-h-12 rounded-button border border-line bg-white px-5 py-3 font-semibold text-muted transition hover:bg-canvas hover:text-ink"
-          >
-            Wyczyść
-          </button>
-        </div>
-      </form>
-
-      <div
-        aria-live="polite"
-        className="mt-7"
-      >
-        {result ? (
-          <PromotionResult
-            result={
-              result
-            }
-          />
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-function NumberField({
-  id,
-  label,
-  value,
-  placeholder,
-  suffix,
-  help,
-  inputMode = "decimal",
-  onChange,
-}: {
-  id: string;
-  label: string;
-  value: string;
-  placeholder: string;
-  suffix: string;
-  help?: string;
-
-  inputMode?:
-    | "decimal"
-    | "numeric";
-
-  onChange: (
-    value: string,
-  ) => void;
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={
-          id
-        }
-        className="mb-2 block text-sm font-bold"
-      >
-        {label}
-      </label>
-
-      <div className="relative">
-        <input
-          id={
-            id
+        <CalculatorError
+          message={
+            error
           }
-          type="text"
-          inputMode={
-            inputMode
-          }
-          value={
-            value
-          }
-          placeholder={
-            placeholder
-          }
-          onChange={
-            (
-              event,
-            ) =>
-              onChange(
-                event.target
-                  .value,
-              )
-          }
-          className="h-12 w-full rounded-xl border border-line bg-canvas px-4 pr-16 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
         />
 
-        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-muted">
-          {suffix}
-        </span>
-      </div>
+        <CalculatorActions
+          submitLabel="Prześwietl promocję"
+          onReset={
+            reset
+          }
+        />
+      </form>
 
-      {help ? (
-        <p className="mt-2 text-xs leading-5 text-muted">
-          {help}
-        </p>
+      {result ? (
+        <PromotionResult
+          result={
+            result
+          }
+        />
       ) : null}
-    </div>
+    </CalculatorShell>
   );
 }
 
@@ -365,26 +274,26 @@ function PromotionResult({
     PromotionMeterResult;
 }) {
   return (
-    <section className="rounded-card border border-brand-200 bg-brand-50 p-5 sm:p-6">
-      <p className="text-xs font-black uppercase tracking-[0.14em] text-brand-700">
-        Wynik Promocjometru
-      </p>
-
-      <h2 className="mt-2 text-2xl font-black">
-        {ratingTitle(
+    <CalculatorResultShell
+      tone={
+        ratingTone(
           result,
-        )}
-      </h2>
-
-      <p className="mt-2 text-sm leading-6 text-brand-900">
-        {ratingDescription(
+        )
+      }
+      title={
+        ratingTitle(
           result,
-        )}
-      </p>
-
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <ResultTile
-          label="Różnica ceny"
+        )
+      }
+      lead={
+        ratingDescription(
+          result,
+        )
+      }
+    >
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <CalculatorMetric
+          label="Różnica na sztuce"
           value={
             formatSignedCurrency(
               result.savingPerItemPln,
@@ -392,8 +301,8 @@ function PromotionResult({
           }
         />
 
-        <ResultTile
-          label="Zmiana procentowa"
+        <CalculatorMetric
+          label="Zmiana ceny"
           value={
             formatSignedPercent(
               result.discountPercent,
@@ -401,7 +310,7 @@ function PromotionResult({
           }
         />
 
-        <ResultTile
+        <CalculatorMetric
           label={
             "Łącznie za " +
             result.quantity +
@@ -414,59 +323,63 @@ function PromotionResult({
           }
         />
 
-        <ResultTile
-          label="Łączna oszczędność"
+        <CalculatorMetric
+          label="Łączna różnica"
           value={
             formatSignedCurrency(
               result.totalSavingPln,
             )
           }
+          accent
         />
       </div>
 
       {result.lowest30DaysPln !==
       null ? (
-        <div className="mt-5 rounded-2xl border border-line bg-white p-4">
+        <div className="mt-4 rounded-2xl border border-line bg-white p-4">
           <p className="text-xs font-black uppercase tracking-[0.08em] text-muted">
-            Porównanie z podaną ceną z 30 dni
+            Cena z 30 dni
           </p>
 
-          <p className="mt-2 text-sm font-bold leading-6">
+          <p className="mt-2 text-sm font-bold leading-6 text-ink">
             {lowest30DaysMessage(
               result,
             )}
           </p>
 
           <p className="mt-2 text-xs leading-5 text-muted">
-            To wyłącznie porównanie
-            matematyczne wpisanych cen,
-            a nie ocena zgodności promocji
-            z przepisami.
+            To porównanie liczb podanych przez użytkownika, nie ocena zgodności promocji z przepisami.
           </p>
         </div>
       ) : null}
-    </section>
+    </CalculatorResultShell>
   );
 }
 
-function ResultTile({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-line bg-white p-4">
-      <p className="text-xs leading-5 text-muted">
-        {label}
-      </p>
+function ratingTone(
+  result:
+    PromotionMeterResult,
+):
+  | "good"
+  | "neutral"
+  | "warning" {
+  if (
+    result.rating ===
+    "worse"
+  ) {
+    return "warning";
+  }
 
-      <p className="mt-1 text-lg font-black text-brand-800">
-        {value}
-      </p>
-    </div>
-  );
+  if (
+    result.rating ===
+      "none" ||
+    result.rating ===
+      "small"
+  ) {
+    return "neutral";
+  }
+
+  return "good";
 }
 
 function ratingTitle(
@@ -477,19 +390,19 @@ function ratingTitle(
     result.rating
   ) {
     case "worse":
-      return "To nie jest obniżka ceny.";
+      return "Stop. Ta „promocja” jest droższa.";
 
     case "none":
-      return "Cena się nie zmieniła.";
+      return "Cena stoi w miejscu. Promocja też.";
 
     case "small":
-      return "Mała obniżka.";
+      return "Mała obniżka. Cebulka, nie cebula.";
 
     case "good":
-      return "Solidna obniżka.";
+      return "Solidna obniżka. Portfel oddycha.";
 
     case "strong":
-      return "Duża obniżka.";
+      return "Tu już jest konkretna cebula.";
   }
 }
 
@@ -502,7 +415,7 @@ function ratingDescription(
     "worse"
   ) {
     return (
-      "Cena promocyjna jest wyższa od wpisanej regularnej o " +
+      "Cena promocyjna jest wyższa od regularnej o " +
       currencyFormatter.format(
         Math.abs(
           result.savingPerItemPln,
@@ -516,7 +429,7 @@ function ratingDescription(
     result.rating ===
     "none"
   ) {
-    return "Wpisana cena promocyjna jest taka sama jak cena regularna.";
+    return "Wpisana cena promocyjna jest dokładnie taka sama jak regularna.";
   }
 
   return (
@@ -652,7 +565,8 @@ function parsePolishDecimal(
       );
 
   if (
-    normalized === ""
+    normalized ===
+    ""
   ) {
     throw new Error(
       "Uzupełnij wszystkie wymagane pola.",

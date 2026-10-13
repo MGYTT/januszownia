@@ -114,7 +114,7 @@ function assertPositiveFinite(
       0
   ) {
     throw new RangeError(
-      `${label} musi być większa od zera.`,
+      label + " musi być większa od zera.",
     );
   }
 }
@@ -131,7 +131,7 @@ function assertNonNegativeFinite(
       0
   ) {
     throw new RangeError(
-      `${label} nie może być ujemna.`,
+      label + " nie może być ujemna.",
     );
   }
 }
