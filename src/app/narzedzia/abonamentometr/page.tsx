@@ -95,7 +95,7 @@ export default function SubscriptionMeterPage() {
             Możesz więc policzyć zarówno
             darmowy start za 0 zł, jak i
             ofertę typu „pierwsze 3
-            miesiące po 9,99 zł”.
+            płatności po 9,99 zł”.
           </p>
 
           <p>
