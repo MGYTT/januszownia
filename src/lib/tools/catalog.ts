@@ -263,13 +263,16 @@ export const toolCatalog:
         "Grillometr",
 
       description:
-        "Pomoże obliczyć ilość jedzenia i budżet grilla dla podanej liczby osób.",
+        "Szacuje ilość jedzenia, napojów, paliwa do grilla i budżet na podstawie liczby gości oraz wpisanych cen.",
 
       category:
         "Jedzenie",
 
       status:
-        "planned",
+        "available",
+
+      href:
+        "/narzedzia/grillometr",
 
       icon:
         "calculator",
@@ -294,13 +297,16 @@ export const toolCatalog:
         "Godziny pracy",
 
       description:
-        "Przeliczy cenę zakupu na liczbę godzin pracy potrzebnych do jego sfinansowania.",
+        "Przelicza cenę zakupu na minuty, godziny i dni pracy na podstawie własnego dochodu netto.",
 
       category:
         "Pieniądze",
 
       status:
-        "planned",
+        "available",
+
+      href:
+        "/narzedzia/ile-na-to-robisz",
 
       icon:
         "wallet",
@@ -325,13 +331,16 @@ export const toolCatalog:
         "Koszt trasy",
 
       description:
-        "Policzy koszt paliwa, przejazdu oraz koszt podróży przypadający na pasażera.",
+        "Liczy paliwo, opłaty, parking, pełny koszt przejazdu oraz koszt przypadający na osobę.",
 
       category:
         "Podróże",
 
       status:
-        "planned",
+        "available",
+
+      href:
+        "/narzedzia/kalkulator-trasy",
 
       icon:
         "map-pin",
