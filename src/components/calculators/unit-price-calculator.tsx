@@ -89,16 +89,18 @@ export function UnitPriceCalculator() {
       null,
     );
 
-  function updateProduct(
+  function updateProduct<
+    Key extends keyof ProductFormState,
+  >(
     product:
       | "a"
       | "b",
 
     field:
-      keyof ProductFormState,
+      Key,
 
     value:
-      string,
+      ProductFormState[Key],
   ) {
     setForm(
       (
@@ -272,11 +274,13 @@ function ProductFields({
   value: ProductFormState;
 
   onChange:
-    (
+    <
+      Key extends keyof ProductFormState,
+    >(
       field:
-        keyof ProductFormState,
+        Key,
       value:
-        string,
+        ProductFormState[Key],
     ) => void;
 }) {
   return (
@@ -360,7 +364,7 @@ function ProductFields({
                 ) =>
                   onChange(
                     "unit",
-                    event.target.value,
+                    event.target.value as QuantityUnit,
                   )
               }
               className="h-12 rounded-xl border border-line bg-white px-3 text-base font-black outline-none transition focus:border-brand-300 focus:ring-4 focus:ring-brand-100"
