@@ -309,7 +309,7 @@ function assertPrices(
         0
     ) {
       throw new RangeError(
-        \`\${label} nie może być ujemna.\`,
+        label + " nie może być ujemna.",
       );
     }
   }
@@ -329,7 +329,7 @@ function assertGuestCount(
       200
   ) {
     throw new RangeError(
-      \`\${label} musi być liczbą całkowitą od 0 do 200.\`,
+      label + " musi być liczbą całkowitą od 0 do 200.",
     );
   }
 }
