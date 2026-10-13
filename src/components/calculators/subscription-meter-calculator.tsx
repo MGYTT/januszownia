@@ -663,11 +663,9 @@ function SubscriptionResult({
           detail={
             "Po podziale na " +
             result.peopleSharing +
-            (
-              result.peopleSharing ===
-              1
-                ? " osobę"
-                : " osoby/osób"
+            " " +
+            personWord(
+              result.peopleSharing,
             )
           }
         />
@@ -1112,4 +1110,42 @@ function parsePositiveInteger(
   }
 
   return parsed;
+}
+
+
+function personWord(
+  count:
+    number,
+): string {
+  if (
+    count ===
+    1
+  ) {
+    return "osobę";
+  }
+
+  const lastDigit =
+    count %
+    10;
+
+  const lastTwoDigits =
+    count %
+    100;
+
+  if (
+    lastDigit >=
+      2 &&
+    lastDigit <=
+      4 &&
+    !(
+      lastTwoDigits >=
+        12 &&
+      lastTwoDigits <=
+        14
+    )
+  ) {
+    return "osoby";
+  }
+
+  return "osób";
 }
