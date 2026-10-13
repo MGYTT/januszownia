@@ -1595,21 +1595,21 @@ function createNonce():
     bytes,
   );
 
-  let binary =
-    "";
-
-  for (
-    const byte
-    of bytes
-  ) {
-    binary +=
-      String.fromCharCode(
-        byte,
-      );
-  }
-
-  return btoa(
-    binary,
+  return Array.from(
+    bytes,
+    (
+      byte,
+    ) =>
+      byte
+        .toString(
+          16,
+        )
+        .padStart(
+          2,
+          "0",
+        ),
+  ).join(
+    "",
   );
 }
 
