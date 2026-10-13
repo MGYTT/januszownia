@@ -394,6 +394,55 @@ export const toolCatalog:
 
     {
       slug:
+        "abonamentometr",
+
+      title:
+        "Abonamentometr",
+
+      shortTitle:
+        "Abonamenty",
+
+      memeLine:
+        "„Tylko 29,99 miesięcznie” brzmi niewinnie, dopóki pięć usług nie zacznie mówić tego naraz.",
+
+      description:
+        "Liczy realny koszt abonamentu, koszt jednego użycia, opłaty startowe, promocje, podwyżki i podział kosztu na osoby.",
+
+      whatYouGet:
+        "Wiesz, ile naprawdę kosztuje abonament i jak często trzeba z niego korzystać, żeby zmieścić się we własnym limicie kosztu użycia.",
+
+      category:
+        "Pieniądze",
+
+      status:
+        "available",
+
+      href:
+        "/narzedzia/abonamentometr",
+
+      icon:
+        "wallet",
+
+      keywords: [
+        "abonament",
+        "subskrypcja",
+        "netflix",
+        "spotify",
+        "siłownia",
+        "aplikacja",
+        "streaming",
+        "miesięcznie",
+        "rocznie",
+        "koszt użycia",
+        "opłata cykliczna",
+        "trial",
+        "okres próbny",
+        "podwyżka",
+      ],
+    },
+
+    {
+      slug:
         "kalkulator-trasy",
 
       title:
