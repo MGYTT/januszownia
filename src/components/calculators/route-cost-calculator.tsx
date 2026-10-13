@@ -84,9 +84,11 @@ export function RouteCostCalculator() {
       null,
     );
 
-  function updateField(
-    field: keyof FormState,
-    value: string | boolean,
+  function updateField<
+    Key extends keyof FormState,
+  >(
+    field: Key,
+    value: FormState[Key],
   ) {
     setForm(
       (
