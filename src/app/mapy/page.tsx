@@ -141,34 +141,6 @@ export default async function MapsPage({
             od hydracji całej strony.
           </p>
         </div>
-
-        <div className="hidden shrink-0 gap-2 sm:flex">
-          <Link
-            href="/konto/kolekcje"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-line bg-white px-4 text-sm font-black transition hover:bg-canvas"
-          >
-            <Icon
-              name="grid"
-              className="h-4 w-4"
-            />
-
-            Kolekcje
-          </Link>
-
-          <Link
-            href="/mapy/dodaj"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 text-sm font-black text-white transition hover:bg-brand-700"
-          >
-            <span
-              aria-hidden="true"
-              className="text-lg leading-none"
-            >
-              +
-            </span>
-
-            Dodaj miejsce
-          </Link>
-        </div>
       </header>
 
       <MapExplorer
