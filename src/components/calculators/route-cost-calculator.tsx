@@ -59,7 +59,7 @@ const percentFormatter =
     },
   );
 
-export function RouteCostCalculator() {
+export default function RouteCostCalculator() {
   const [
     form,
     setForm,
@@ -146,7 +146,7 @@ export function RouteCostCalculator() {
             ),
 
           travelers:
-            parseInteger(
+            parsePositiveInteger(
               form.travelers,
             ),
         });
@@ -162,8 +162,7 @@ export function RouteCostCalculator() {
       setResult(null);
 
       setError(
-        unknownError instanceof
-          Error
+        unknownError instanceof Error
           ? unknownError.message
           : "Nie udało się wykonać obliczenia.",
       );
@@ -466,8 +465,7 @@ function NumberField({
               event,
             ) =>
               onChange(
-                event.target
-                  .value,
+                event.target.value,
               )
           }
           className="h-12 w-full rounded-xl border border-line bg-canvas px-4 pr-24 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
@@ -573,7 +571,11 @@ function RouteCostResultView({
       </div>
 
       <p className="mt-5 text-xs leading-5 text-muted">
-        Kalkulator liczy koszty wpisane przez użytkownika. Nie uwzględnia amortyzacji, opon, serwisu, ubezpieczenia ani wartości czasu podróży.
+        Kalkulator liczy koszty wpisane
+        przez użytkownika. Nie uwzględnia
+        amortyzacji, opon, serwisu,
+        ubezpieczenia ani wartości czasu
+        podróży.
       </p>
     </section>
   );
@@ -667,7 +669,7 @@ function parsePolishDecimal(
   return parsed;
 }
 
-function parseInteger(
+function parsePositiveInteger(
   value: string,
 ): number {
   const parsed =
@@ -678,10 +680,11 @@ function parseInteger(
   if (
     !Number.isInteger(
       parsed,
-    )
+    ) ||
+    parsed <= 0
   ) {
     throw new Error(
-      "Liczba osób musi być liczbą całkowitą.",
+      "Liczba osób musi być dodatnią liczbą całkowitą.",
     );
   }
 
