@@ -4,11 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:lan": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
+    "start:lan": "next start -H 0.0.0.0",
     "lint": "eslint",
     "test": "vitest run"
   },
+  "browserslist": [
+    "chrome >= 100",
+    "edge >= 100",
+    "firefox >= 100",
+    "safari >= 15.6",
+    "ios_saf >= 15.6"
+  ],
   "dependencies": {
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.117.3",

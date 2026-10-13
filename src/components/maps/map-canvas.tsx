@@ -60,9 +60,13 @@ const POLAND_CENTER:
 const DEFAULT_ZOOM =
   6;
 
+const INITIALIZATION_TIMEOUT_MS =
+  8000;
+
 const TILE_URL =
   process.env
-    .NEXT_PUBLIC_MAP_TILE_URL ??
+    .NEXT_PUBLIC_MAP_TILE_URL
+    ?.trim() ||
   "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 
 export function MapCanvas({
@@ -124,6 +128,14 @@ export function MapCanvas({
     );
 
   const [
+    tileWarning,
+    setTileWarning,
+  ] =
+    useState(
+      false,
+    );
+
+  const [
     retryKey,
     setRetryKey,
   ] =
@@ -151,16 +163,35 @@ export function MapCanvas({
     ],
   );
 
+  /*
+   * =======================================================
+   * INICJALIZACJA MAPY
+   * =======================================================
+   */
   useEffect(
     () => {
-      const container =
+      const containerElement =
         containerRef.current;
 
-      if (!container) {
+      if (
+        containerElement ===
+        null
+      ) {
+        setStatus(
+          "error",
+        );
+
+        setErrorMessage(
+          "Nie znaleziono kontenera mapy.",
+        );
+
         return;
       }
 
-      let cancelled =
+      let disposed =
+        false;
+
+      let timedOut =
         false;
 
       let initializedMap:
@@ -171,13 +202,22 @@ export function MapCanvas({
         ResizeObserver | null =
         null;
 
-      let firstTimer:
+      let resizeListener:
+        (() => void) | null =
+        null;
+
+      let firstFrame =
+        0;
+
+      let secondFrame =
+        0;
+
+      let delayedTimer:
         number | null =
         null;
 
-      let secondTimer:
-        number | null =
-        null;
+      let tileErrors =
+        0;
 
       setStatus(
         "initializing",
@@ -187,25 +227,61 @@ export function MapCanvas({
         "",
       );
 
-      async function initializeMap() {
+      setTileWarning(
+        false,
+      );
+
+      /*
+       * Jeżeli import albo inicjalizacja
+       * faktycznie się zawiesi, po 8 s
+       * użytkownik dostanie błąd.
+       */
+      const timeout =
+        window.setTimeout(
+          () => {
+            if (
+              disposed ||
+              mapRef.current !==
+                null
+            ) {
+              return;
+            }
+
+            timedOut =
+              true;
+
+            setStatus(
+              "error",
+            );
+
+            setErrorMessage(
+              "Uruchomienie mapy trwało zbyt długo. Spróbuj ponownie.",
+            );
+
+            console.error(
+              "MapCanvas: timeout inicjalizacji Leafleta.",
+            );
+          },
+          INITIALIZATION_TIMEOUT_MS,
+        );
+
+      async function initializeMap(
+        element:
+          HTMLDivElement,
+      ) {
         try {
-          /*
-           * Leaflet jest importowany dopiero
-           * w prawdziwej przeglądarce.
-           *
-           * Dzięki temu moduł komponentu
-           * nie jest uzależniony od tego,
-           * czy Leaflet może zostać
-           * wykonany podczas renderowania
-           * lub ładowania chunka Next.js.
-           */
+          console.info(
+            "MapCanvas: rozpoczynam inicjalizację.",
+          );
+
           const L =
             await import(
               "leaflet"
             );
 
           if (
-            cancelled
+            disposed ||
+            timedOut
           ) {
             return;
           }
@@ -213,14 +289,9 @@ export function MapCanvas({
           leafletRef.current =
             L;
 
-          /*
-           * W czasie Fast Refresh albo
-           * ponownej inicjalizacji Leaflet
-           * nie może dostać dwa razy tego
-           * samego kontenera.
-           */
           if (
-            mapRef.current
+            mapRef.current !==
+            null
           ) {
             mapRef.current.remove();
 
@@ -228,9 +299,13 @@ export function MapCanvas({
               null;
           }
 
+          /*
+           * Leaflet wymaga kontenera
+           * posiadającego realne wymiary.
+           */
           const map =
             L.map(
-              container,
+              element,
               {
                 zoomControl:
                   false,
@@ -241,20 +316,22 @@ export function MapCanvas({
                 preferCanvas:
                   true,
 
-                /*
-                 * Dobre zachowanie
-                 * na ekranach dotykowych.
-                 */
-                touchZoom:
+                dragging:
                   true,
 
-                scrollWheelZoom:
+                touchZoom:
                   true,
 
                 doubleClickZoom:
                   true,
 
-                dragging:
+                scrollWheelZoom:
+                  true,
+
+                boxZoom:
+                  true,
+
+                keyboard:
                   true,
               },
             );
@@ -268,6 +345,10 @@ export function MapCanvas({
           map.setView(
             POLAND_CENTER,
             DEFAULT_ZOOM,
+            {
+              animate:
+                false,
+            },
           );
 
           const tileLayer =
@@ -284,6 +365,24 @@ export function MapCanvas({
                   "&copy; OpenStreetMap contributors",
               },
             );
+
+          tileLayer.on(
+            "tileerror",
+            () => {
+              tileErrors +=
+                1;
+
+              if (
+                tileErrors >=
+                  6 &&
+                !disposed
+              ) {
+                setTileWarning(
+                  true,
+                );
+              }
+            },
+          );
 
           tileLayer.addTo(
             map,
@@ -310,7 +409,7 @@ export function MapCanvas({
 
           function emitViewport() {
             if (
-              cancelled
+              disposed
             ) {
               return;
             }
@@ -333,9 +432,9 @@ export function MapCanvas({
             });
           }
 
-          function invalidate() {
+          function invalidateMap() {
             if (
-              cancelled
+              disposed
             ) {
               return;
             }
@@ -351,45 +450,70 @@ export function MapCanvas({
             emitViewport,
           );
 
-          map.whenReady(
-            () => {
-              if (
-                cancelled
-              ) {
-                return;
-              }
-
-              /*
-               * Mobilne przeglądarki potrafią
-               * dopiero chwilę po hydracji
-               * ustalić końcową wysokość
-               * viewportu.
-               */
-              invalidate();
-
-              emitViewport();
-
-              setStatus(
-                "ready",
-              );
-
-              firstTimer =
-                window.setTimeout(
-                  invalidate,
-                  100,
-                );
-
-              secondTimer =
-                window.setTimeout(
-                  () => {
-                    invalidate();
-
-                    emitViewport();
-                  },
-                  450,
-                );
-            },
+          /*
+           * Najważniejsze:
+           *
+           * NIE używamy whenReady().
+           *
+           * Instancja mapy już istnieje,
+           * setView został wykonany,
+           * warstwa kafelków jest podpięta.
+           */
+          window.clearTimeout(
+            timeout,
           );
+
+          setStatus(
+            "ready",
+          );
+
+          console.info(
+            "MapCanvas: Leaflet uruchomiony.",
+          );
+
+          firstFrame =
+            window.requestAnimationFrame(
+              () => {
+                if (
+                  disposed
+                ) {
+                  return;
+                }
+
+                invalidateMap();
+
+                emitViewport();
+
+                secondFrame =
+                  window.requestAnimationFrame(
+                    () => {
+                      if (
+                        disposed
+                      ) {
+                        return;
+                      }
+
+                      invalidateMap();
+                    },
+                  );
+              },
+            );
+
+          delayedTimer =
+            window.setTimeout(
+              () => {
+                if (
+                  disposed
+                ) {
+                  return;
+                }
+
+                invalidateMap();
+
+                emitViewport();
+              },
+              400,
+            );
 
           if (
             typeof ResizeObserver !==
@@ -398,107 +522,126 @@ export function MapCanvas({
             resizeObserver =
               new ResizeObserver(
                 () => {
-                  invalidate();
+                  invalidateMap();
                 },
               );
 
             resizeObserver.observe(
-              container,
+              element,
             );
           } else {
-            /*
-             * Fallback dla starszych
-             * przeglądarek mobilnych.
-             */
+            resizeListener =
+              () => {
+                invalidateMap();
+              };
+
             window.addEventListener(
               "resize",
-              invalidate,
+              resizeListener,
             );
           }
-
-          /*
-           * Cleanup eventu resize
-           * zapisujemy bez dodatkowego
-           * stanu React.
-           */
-          (
-            map as LeafletMap & {
-              __januszowniaInvalidate?:
-                () => void;
-            }
-          ).__januszowniaInvalidate =
-            invalidate;
         } catch (
           error
         ) {
+          window.clearTimeout(
+            timeout,
+          );
+
           if (
-            cancelled
+            disposed
           ) {
             return;
           }
 
           console.error(
-            "Nie udało się uruchomić Leaflet:",
+            "MapCanvas: błąd uruchamiania Leafleta:",
             error,
           );
+
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Nieznany błąd.";
 
           setStatus(
             "error",
           );
 
           setErrorMessage(
-            "Mapa nie mogła zostać uruchomiona. Sprawdź połączenie i spróbuj ponownie.",
+            process.env.NODE_ENV ===
+              "development"
+              ? `Mapa nie mogła zostać uruchomiona: ${message}`
+              : "Mapa nie mogła zostać uruchomiona. Spróbuj ponownie.",
           );
         }
       }
 
-      void initializeMap();
+      void initializeMap(
+        containerElement,
+      );
 
       return () => {
-        cancelled =
+        disposed =
           true;
 
+        window.clearTimeout(
+          timeout,
+        );
+
         if (
-          firstTimer !==
+          delayedTimer !==
           null
         ) {
           window.clearTimeout(
-            firstTimer,
+            delayedTimer,
           );
         }
 
         if (
-          secondTimer !==
-          null
+          firstFrame !==
+          0
         ) {
-          window.clearTimeout(
-            secondTimer,
+          window.cancelAnimationFrame(
+            firstFrame,
+          );
+        }
+
+        if (
+          secondFrame !==
+          0
+        ) {
+          window.cancelAnimationFrame(
+            secondFrame,
           );
         }
 
         resizeObserver?.disconnect();
 
         if (
-          initializedMap
+          resizeListener !==
+          null
         ) {
-          const invalidate =
-            (
-              initializedMap as LeafletMap & {
-                __januszowniaInvalidate?:
-                  () => void;
-              }
-            )
-              .__januszowniaInvalidate;
+          window.removeEventListener(
+            "resize",
+            resizeListener,
+          );
+        }
 
-          if (
-            invalidate
-          ) {
-            window.removeEventListener(
-              "resize",
-              invalidate,
-            );
-          }
+        locationMarkerRef.current?.remove();
 
+        locationMarkerRef.current =
+          null;
+
+        placesLayerRef.current =
+          null;
+
+        leafletRef.current =
+          null;
+
+        if (
+          initializedMap !==
+          null
+        ) {
           initializedMap.off();
 
           initializedMap.remove();
@@ -511,15 +654,6 @@ export function MapCanvas({
           mapRef.current =
             null;
         }
-
-        placesLayerRef.current =
-          null;
-
-        locationMarkerRef.current =
-          null;
-
-        leafletRef.current =
-          null;
       };
     },
     [
@@ -528,7 +662,9 @@ export function MapCanvas({
   );
 
   /*
-   * Renderowanie punktów.
+   * =======================================================
+   * MARKERY MIEJSC
+   * =======================================================
    */
   useEffect(
     () => {
@@ -546,8 +682,8 @@ export function MapCanvas({
         placesLayerRef.current;
 
       if (
-        !L ||
-        !layer
+        L === null ||
+        layer === null
       ) {
         return;
       }
@@ -642,18 +778,17 @@ export function MapCanvas({
   );
 
   /*
-   * Centrowanie mapy:
-   *
-   * - konkretne miejsce,
-   * - lokalizacja użytkownika,
-   * - cała Polska.
+   * =======================================================
+   * FOCUS / LOKALIZACJA
+   * =======================================================
    */
   useEffect(
     () => {
       if (
         status !==
           "ready" ||
-        !focus
+        focus ===
+          null
       ) {
         return;
       }
@@ -665,11 +800,16 @@ export function MapCanvas({
         mapRef.current;
 
       if (
-        !L ||
-        !map
+        L === null ||
+        map === null
       ) {
         return;
       }
+
+      map.invalidateSize({
+        pan:
+          false,
+      });
 
       map.flyTo(
         [
@@ -749,23 +889,83 @@ export function MapCanvas({
   );
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-canvas">
-      {/*
-       * Kontener istnieje od pierwszego
-       * renderu i ma pełne wymiary.
-       */}
+    <div
+      className="relative h-full w-full overflow-hidden bg-canvas"
+      style={{
+        position:
+          "relative",
+
+        width:
+          "100%",
+
+        height:
+          "100%",
+
+        minHeight:
+          "420px",
+
+        overflow:
+          "hidden",
+
+        background:
+          "#eef2ec",
+      }}
+    >
       <div
         ref={
           containerRef
         }
-        className="absolute inset-0 h-full w-full"
         aria-label="Mapa miejsc Januszowni"
+        style={{
+          position:
+            "absolute",
+
+          inset:
+            0,
+
+          width:
+            "100%",
+
+          height:
+            "100%",
+
+          minHeight:
+            "420px",
+        }}
       />
 
       {status ===
       "initializing" ? (
-        <div className="pointer-events-none absolute inset-0 z-[900] flex items-center justify-center bg-canvas">
-          <div className="rounded-2xl bg-white/95 px-6 py-5 text-center shadow-sm backdrop-blur">
+        <div
+          role="status"
+          aria-live="polite"
+          style={{
+            position:
+              "absolute",
+
+            inset:
+              0,
+
+            zIndex:
+              900,
+
+            display:
+              "flex",
+
+            alignItems:
+              "center",
+
+            justifyContent:
+              "center",
+
+            padding:
+              "20px",
+
+            background:
+              "#eef2ec",
+          }}
+        >
+          <div className="rounded-[1.5rem] border border-line bg-white px-6 py-5 text-center shadow-sm">
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-brand-100 border-t-brand-600" />
 
             <p className="mt-3 text-sm font-black">
@@ -773,8 +973,8 @@ export function MapCanvas({
             </p>
 
             <p className="mt-1 text-xs text-muted">
-              To powinno potrwać
-              tylko chwilę.
+              Maksymalnie kilka
+              sekund.
             </p>
           </div>
         </div>
@@ -782,10 +982,36 @@ export function MapCanvas({
 
       {status ===
       "error" ? (
-        <div className="absolute inset-0 z-[900] flex items-center justify-center bg-canvas p-5">
+        <div
+          style={{
+            position:
+              "absolute",
+
+            inset:
+              0,
+
+            zIndex:
+              900,
+
+            display:
+              "flex",
+
+            alignItems:
+              "center",
+
+            justifyContent:
+              "center",
+
+            padding:
+              "20px",
+
+            background:
+              "#eef2ec",
+          }}
+        >
           <div
             role="alert"
-            className="w-full max-w-sm rounded-[1.5rem] border border-line bg-white p-6 text-center shadow-lg"
+            className="w-full max-w-sm rounded-[1.5rem] border border-line bg-white p-6 text-center shadow-xl"
           >
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-50 text-2xl">
               🗺️
@@ -804,20 +1030,47 @@ export function MapCanvas({
             <button
               type="button"
               onClick={
-                () =>
+                () => {
                   setRetryKey(
                     (
                       current,
                     ) =>
                       current +
                       1,
-                  )
+                  );
+                }
               }
               className="mt-5 min-h-11 w-full rounded-xl bg-brand-600 px-4 text-sm font-black text-white transition hover:bg-brand-700"
             >
               Spróbuj ponownie
             </button>
+
+            <button
+              type="button"
+              onClick={
+                () => {
+                  window.location.reload();
+                }
+              }
+              className="mt-2 min-h-10 w-full rounded-xl border border-line bg-white px-4 text-xs font-black text-muted transition hover:bg-canvas hover:text-ink"
+            >
+              Odśwież stronę
+            </button>
           </div>
+        </div>
+      ) : null}
+
+      {status ===
+        "ready" &&
+      tileWarning ? (
+        <div
+          role="status"
+          className="absolute left-3 right-3 top-3 z-[800] rounded-xl border border-accent-200 bg-accent-50 px-4 py-3 text-xs font-semibold leading-5 text-accent-800 shadow-sm sm:left-1/2 sm:right-auto sm:max-w-md sm:-translate-x-1/2"
+        >
+          Mapa działa, ale część
+          kafelków nie została
+          pobrana. Sprawdź
+          połączenie z internetem.
         </div>
       ) : null}
     </div>
@@ -855,24 +1108,24 @@ function escapeTooltip(
   value: string,
 ): string {
   return value
-    .replaceAll(
-      "&",
+    .replace(
+      /&/g,
       "&amp;",
     )
-    .replaceAll(
-      "<",
+    .replace(
+      /</g,
       "&lt;",
     )
-    .replaceAll(
-      ">",
+    .replace(
+      />/g,
       "&gt;",
     )
-    .replaceAll(
-      '"',
+    .replace(
+      /"/g,
       "&quot;",
     )
-    .replaceAll(
-      "'",
+    .replace(
+      /'/g,
       "&#039;",
     );
 }
