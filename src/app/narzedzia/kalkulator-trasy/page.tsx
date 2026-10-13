@@ -4,9 +4,7 @@ import type {
 
 import Link from "next/link";
 
-import {
-  RouteCostCalculator,
-} from "@/components/calculators/route-cost-calculator";
+import RouteCostCalculator from "@/components/calculators/route-cost-calculator";
 
 export const metadata: Metadata = {
   title:
