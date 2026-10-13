@@ -6,6 +6,15 @@ import {
 } from "react";
 
 import {
+  CalculatorActions,
+  CalculatorError,
+  CalculatorField,
+  CalculatorMetric,
+  CalculatorResultShell,
+  CalculatorShell,
+} from "@/components/calculators/calculator-ui";
+
+import {
   calculateShowerCost,
   type ShowerCostResult,
 } from "@/lib/calculators/shower-cost";
@@ -154,10 +163,9 @@ export function ShowerCostCalculator() {
       setResult(null);
 
       setError(
-        unknownError instanceof
-          Error
+        unknownError instanceof Error
           ? unknownError.message
-          : "Nie udało się wykonać obliczenia.",
+          : "Nie udało się policzyć kosztu prysznica.",
       );
     }
   }
@@ -169,14 +177,14 @@ export function ShowerCostCalculator() {
   }
 
   return (
-    <div className="rounded-[2rem] border border-line bg-white p-5 shadow-card sm:p-7 lg:p-8">
+    <CalculatorShell intro="„Jeszcze minutka” pod ciepłą wodą lubi się rozmnażać. Policzmy wodę i podgrzewanie bez moralizowania.">
       <form
         onSubmit={
           handleSubmit
         }
       >
-        <div className="grid gap-5 md:grid-cols-2">
-          <NumberField
+        <div className="grid gap-4 md:grid-cols-2">
+          <CalculatorField
             id="duration"
             label="Długość jednego prysznica"
             value={
@@ -195,7 +203,7 @@ export function ShowerCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="flow"
             label="Przepływ słuchawki"
             value={
@@ -203,7 +211,7 @@ export function ShowerCostCalculator() {
             }
             placeholder="np. 8"
             suffix="l/min"
-            help="Jeżeli nie znasz przepływu, zmierz ile litrów słuchawka nalewa przez dokładnie minutę."
+            help="Jeżeli nie znasz przepływu, zmierz ile litrów nalewa słuchawka przez dokładnie minutę."
             onChange={
               (
                 value,
@@ -215,7 +223,7 @@ export function ShowerCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="water-price"
             label="Cena wody i ścieków"
             value={
@@ -234,7 +242,7 @@ export function ShowerCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="energy-price"
             label="Cena energii do podgrzewania"
             value={
@@ -253,7 +261,7 @@ export function ShowerCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="cold-temperature"
             label="Temperatura zimnej wody"
             value={
@@ -272,9 +280,9 @@ export function ShowerCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="shower-temperature"
-            label="Temperatura wody pod prysznicem"
+            label="Temperatura pod prysznicem"
             value={
               form.showerTemperatureC
             }
@@ -291,7 +299,7 @@ export function ShowerCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="efficiency"
             label="Sprawność podgrzewania"
             value={
@@ -299,7 +307,7 @@ export function ShowerCostCalculator() {
             }
             placeholder="90"
             suffix="%"
-            help="100% oznacza model idealny. Dla rzeczywistego źródła ciepła wpisz sprawność odpowiadającą Twojej instalacji."
+            help="100% oznacza model idealny. Wpisz sprawność odpowiadającą Twojej instalacji, jeśli ją znasz."
             onChange={
               (
                 value,
@@ -311,7 +319,7 @@ export function ShowerCostCalculator() {
             }
           />
 
-          <NumberField
+          <CalculatorField
             id="showers-month"
             label="Prysznice w miesiącu"
             value={
@@ -332,124 +340,28 @@ export function ShowerCostCalculator() {
           />
         </div>
 
-        {error ? (
-          <div
-            role="alert"
-            className="mt-6 rounded-2xl border border-danger-600/20 bg-danger-50 px-4 py-3 text-sm font-medium text-danger-600"
-          >
-            {error}
-          </div>
-        ) : null}
-
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-          <button
-            type="submit"
-            className="min-h-12 flex-1 rounded-button bg-brand-600 px-5 py-3 font-bold text-white shadow-sm transition hover:bg-brand-700 active:translate-y-px"
-          >
-            Policz koszt prysznica
-          </button>
-
-          <button
-            type="button"
-            onClick={
-              reset
-            }
-            className="min-h-12 rounded-button border border-line bg-white px-5 py-3 font-semibold text-muted transition hover:bg-canvas hover:text-ink"
-          >
-            Wyczyść
-          </button>
-        </div>
-      </form>
-
-      <div
-        aria-live="polite"
-        className="mt-7"
-      >
-        {result ? (
-          <ShowerResult
-            result={
-              result
-            }
-          />
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-function NumberField({
-  id,
-  label,
-  value,
-  placeholder,
-  suffix,
-  help,
-  inputMode = "decimal",
-  onChange,
-}: {
-  id: string;
-  label: string;
-  value: string;
-  placeholder: string;
-  suffix: string;
-  help?: string;
-  inputMode?:
-    | "decimal"
-    | "numeric";
-  onChange:
-    (
-      value: string,
-    ) => void;
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={
-          id
-        }
-        className="mb-2 block text-sm font-bold"
-      >
-        {label}
-      </label>
-
-      <div className="relative">
-        <input
-          id={
-            id
+        <CalculatorError
+          message={
+            error
           }
-          type="text"
-          inputMode={
-            inputMode
-          }
-          value={
-            value
-          }
-          placeholder={
-            placeholder
-          }
-          onChange={
-            (
-              event,
-            ) =>
-              onChange(
-                event.target
-                  .value,
-              )
-          }
-          className="h-12 w-full rounded-xl border border-line bg-canvas px-4 pr-20 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
         />
 
-        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-muted">
-          {suffix}
-        </span>
-      </div>
+        <CalculatorActions
+          submitLabel="Policz koszt chlapania"
+          onReset={
+            reset
+          }
+        />
+      </form>
 
-      {help ? (
-        <p className="mt-2 text-xs leading-5 text-muted">
-          {help}
-        </p>
+      {result ? (
+        <ShowerResult
+          result={
+            result
+          }
+        />
       ) : null}
-    </div>
+    </CalculatorShell>
   );
 }
 
@@ -460,25 +372,27 @@ function ShowerResult({
     ShowerCostResult;
 }) {
   return (
-    <section className="rounded-card border border-brand-200 bg-brand-50 p-5 sm:p-6">
-      <p className="text-xs font-black uppercase tracking-[0.14em] text-brand-700">
-        Wynik Prysznicometru
-      </p>
-
-      <div className="mt-2 flex flex-wrap items-end gap-x-3 gap-y-1">
-        <p className="text-3xl font-black text-brand-900">
-          {currencyFormatter.format(
-            result.totalCostPerShowerPln,
-          )}
-        </p>
-
-        <p className="pb-1 text-sm font-bold text-brand-700">
-          za jeden prysznic
-        </p>
-      </div>
-
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <ResultTile
+    <CalculatorResultShell
+      title={
+        currencyFormatter.format(
+          result.totalCostPerShowerPln,
+        ) +
+        " za prysznic"
+      }
+      lead={
+        <>
+          Przy wpisanej częstotliwości daje to około{" "}
+          <strong className="text-ink">
+            {currencyFormatter.format(
+              result.totalCostPerMonthPln,
+            )}
+          </strong>{" "}
+          miesięcznie.
+        </>
+      }
+    >
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <CalculatorMetric
           label="Woda / prysznic"
           value={
             numberFormatter.format(
@@ -486,9 +400,10 @@ function ShowerResult({
             ) +
             " l"
           }
+          accent
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Energia / prysznic"
           value={
             numberFormatter.format(
@@ -498,7 +413,7 @@ function ShowerResult({
           }
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Koszt / miesiąc"
           value={
             currencyFormatter.format(
@@ -507,7 +422,7 @@ function ShowerResult({
           }
         />
 
-        <ResultTile
+        <CalculatorMetric
           label="Koszt / rok"
           value={
             currencyFormatter.format(
@@ -517,7 +432,7 @@ function ShowerResult({
         />
       </div>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <BreakdownTile
           label="Woda i ścieki / miesiąc"
           cost={
@@ -545,30 +460,10 @@ function ShowerResult({
         />
       </div>
 
-      <p className="mt-5 text-xs leading-5 text-muted">
-        Model przyjmuje około 1 kg masy na 1 litr wody i ciepło właściwe wody 4,186 kJ/(kg·K). Wynik zależy od wpisanej ceny energii i sprawności instalacji.
+      <p className="mt-4 text-xs leading-5 text-muted">
+        Model przyjmuje około 1 kg masy na 1 litr wody i ciepło właściwe 4,186 kJ/(kg·K). Wynik zależy od wpisanych stawek i sprawności instalacji.
       </p>
-    </section>
-  );
-}
-
-function ResultTile({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-line bg-white p-4">
-      <p className="text-xs leading-5 text-muted">
-        {label}
-      </p>
-
-      <p className="mt-1 text-lg font-black text-brand-800">
-        {value}
-      </p>
-    </div>
+    </CalculatorResultShell>
   );
 }
 
@@ -583,7 +478,7 @@ function BreakdownTile({
 }) {
   return (
     <div className="rounded-2xl border border-line bg-white p-4">
-      <p className="text-sm font-black">
+      <p className="text-sm font-black text-ink">
         {label}
       </p>
 
