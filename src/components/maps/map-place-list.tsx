@@ -6,7 +6,6 @@ import {
 
 import type {
   MapExplorerPlace,
-  MapViewMode,
 } from "@/lib/maps/explorer-types";
 
 interface MapPlaceListProps {
@@ -22,9 +21,6 @@ interface MapPlaceListProps {
   categories:
     readonly string[];
 
-  view:
-    MapViewMode;
-
   emptyTitle:
     string;
 
@@ -37,7 +33,6 @@ export function MapPlaceList({
   selectedPlaceId,
   query,
   categories,
-  view,
   emptyTitle,
   emptyDescription,
 }: MapPlaceListProps) {
