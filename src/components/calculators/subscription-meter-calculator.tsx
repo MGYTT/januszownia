@@ -224,25 +224,37 @@ export function SubscriptionMeterCalculator() {
           badge="podstawa"
         >
           <div className="grid gap-4 md:grid-cols-2">
-            <CalculatorField
-              id="subscription-name"
-              label="Nazwa abonamentu"
-              value={
-                form.subscriptionName
-              }
-              placeholder="np. streaming, siłownia, chmura"
-              help="Opcjonalne. Nazwa pomaga tylko rozpoznać analizę — nie wpływa na obliczenia."
-              inputMode="text"
-              onChange={
-                (
-                  value,
-                ) =>
-                  updateField(
-                    "subscriptionName",
-                    value,
-                  )
-              }
-            />
+            <div>
+              <label
+                htmlFor="subscription-name"
+                className="mb-2 block text-sm font-bold text-ink"
+              >
+                Nazwa abonamentu
+              </label>
+
+              <input
+                id="subscription-name"
+                type="text"
+                value={
+                  form.subscriptionName
+                }
+                placeholder="np. streaming, siłownia, chmura"
+                onChange={
+                  (
+                    event,
+                  ) =>
+                    updateField(
+                      "subscriptionName",
+                      event.target.value,
+                    )
+                }
+                className="h-12 w-full rounded-xl border border-line bg-white px-4 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:ring-4 focus:ring-brand-100"
+              />
+
+              <p className="mt-2 text-xs leading-5 text-muted">
+                Opcjonalne. Nazwa pomaga tylko rozpoznać analizę — nie wpływa na obliczenia.
+              </p>
+            </div>
 
             <CalculatorField
               id="billing-price"
@@ -649,10 +661,14 @@ function SubscriptionResult({
             )
           }
           detail={
-            result.peopleSharing ===
-            undefined
-              ? ""
-              : "Po podziale kosztu"
+            "Po podziale na " +
+            result.peopleSharing +
+            (
+              result.peopleSharing ===
+              1
+                ? " osobę"
+                : " osoby/osób"
+            )
           }
         />
       </div>
