@@ -522,7 +522,7 @@ function ratingDescription(
     percentFormatter.format(
       result.discountPercent,
     ) +
-    "% ceny regularnej."
+    "% mniej względem ceny regularnej."
   );
 }
 
