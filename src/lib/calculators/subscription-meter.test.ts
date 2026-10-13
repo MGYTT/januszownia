@@ -42,6 +42,13 @@ describe("calculateSubscriptionMeter", () => {
     );
 
     expect(
+      result.cashOutflowPln,
+    ).toBeCloseTo(
+      359.88,
+      10,
+    );
+
+    expect(
       result.totalCostPln,
     ).toBeCloseTo(
       359.88,
@@ -64,7 +71,7 @@ describe("calculateSubscriptionMeter", () => {
     );
   });
 
-  it("liczy pełne opłaty roczne, których termin wpada w okres analizy", () => {
+  it("rozdziela pełny odpływ gotówki od kosztu usługi w częściowym okresie rocznym", () => {
     const result =
       calculateSubscriptionMeter({
         billingPricePln:
@@ -96,9 +103,16 @@ describe("calculateSubscriptionMeter", () => {
     );
 
     expect(
-      result.totalCostPln,
+      result.cashOutflowPln,
     ).toBeCloseTo(
       480,
+      10,
+    );
+
+    expect(
+      result.totalCostPln,
+    ).toBeCloseTo(
+      260,
       10,
     );
 
@@ -113,6 +127,60 @@ describe("calculateSubscriptionMeter", () => {
       1,
       13,
     ]);
+
+    expect(
+      result.charges[1]?.recognizedCostPln,
+    ).toBeCloseTo(
+      20,
+      10,
+    );
+  });
+
+  it("przelicza jedną opłatę roczną proporcjonalnie do jednego miesiąca używania", () => {
+    const result =
+      calculateSubscriptionMeter({
+        billingPricePln:
+          240,
+
+        billingIntervalMonths:
+          12,
+
+        analysisMonths:
+          1,
+
+        setupFeePln:
+          0,
+
+        annualPriceIncreasePercent:
+          0,
+
+        usesPerMonth:
+          4,
+
+        peopleSharing:
+          1,
+      });
+
+    expect(
+      result.cashOutflowPln,
+    ).toBeCloseTo(
+      240,
+      10,
+    );
+
+    expect(
+      result.totalCostPln,
+    ).toBeCloseTo(
+      20,
+      10,
+    );
+
+    expect(
+      result.costPerUsePln,
+    ).toBeCloseTo(
+      5,
+      10,
+    );
   });
 
   it("obsługuje darmowe pierwsze płatności", () => {
