@@ -248,7 +248,7 @@ export function ToolCatalog() {
                 )
             }
             placeholder="Np. czy ta promocja ma sens?"
-            className="h-13 w-full rounded-2xl border border-line bg-canvas pl-12 pr-20 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
+            className="h-14 w-full rounded-2xl border border-line bg-canvas pl-12 pr-20 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
           />
 
           {query ? (
@@ -497,7 +497,7 @@ function ToolCard({
         href={
           tool.href
         }
-        className="group flex h-full flex-col rounded-[1.6rem] border border-line bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-card focus-visible:outline-none sm:p-6"
+        className="group flex h-full flex-col rounded-[1.6rem] border border-line bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-card sm:p-6"
       >
         {content}
       </Link>
