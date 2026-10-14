@@ -26,6 +26,7 @@ export default function AccountLoading() {
 
               <div className="mt-5 grid grid-cols-2 gap-2">
                 <div className="h-20 rounded-xl bg-white/10" />
+
                 <div className="h-20 rounded-xl bg-white/10" />
               </div>
 
@@ -52,19 +53,19 @@ export default function AccountLoading() {
           </div>
         </aside>
 
-        <main className="min-w-0">
-          <section className="rounded-[2rem] border border-line bg-white p-6 shadow-sm sm:p-8">
-            <div className="h-3 w-28 rounded-full bg-canvas" />
-            <div className="mt-3 h-10 w-96 max-w-full rounded-xl bg-canvas" />
-            <div className="mt-4 h-5 w-full max-w-2xl rounded-full bg-canvas" />
-            <div className="mt-2 h-5 w-4/5 max-w-xl rounded-full bg-canvas" />
-          </section>
+        <main className="min-w-0 space-y-8">
+          <section className="overflow-hidden rounded-[2rem] border border-line bg-white shadow-sm">
+            <div className="p-6 sm:p-8">
+              <div className="h-3 w-24 rounded-full bg-canvas" />
 
-          <section className="mt-8">
-            <div className="h-3 w-24 rounded-full bg-canvas" />
-            <div className="mt-3 h-8 w-72 max-w-full rounded-xl bg-canvas" />
+              <div className="mt-3 h-10 w-80 max-w-full rounded-xl bg-canvas" />
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="mt-4 h-5 w-full max-w-2xl rounded-full bg-canvas" />
+
+              <div className="mt-2 h-5 w-4/5 max-w-xl rounded-full bg-canvas" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-px border-t border-line bg-line lg:grid-cols-4">
               {Array.from({
                 length: 4,
               }).map(
@@ -76,22 +77,55 @@ export default function AccountLoading() {
                     key={
                       index
                     }
-                    className="h-44 rounded-[1.5rem] border border-line bg-white shadow-sm"
+                    className="h-24 bg-canvas"
                   />
                 ),
               )}
             </div>
           </section>
 
-          <section className="mt-9">
-            <div className="h-3 w-24 rounded-full bg-canvas" />
-            <div className="mt-3 h-8 w-64 max-w-full rounded-xl bg-canvas" />
+          <section>
+            <div className="flex gap-3">
+              <div className="h-9 w-9 rounded-xl bg-brand-900" />
 
-            <div className="mt-5 grid gap-5 xl:grid-cols-[1.35fr_0.65fr]">
-              <div className="h-[520px] rounded-[2rem] border border-line bg-white shadow-sm" />
+              <div className="flex-1">
+                <div className="h-3 w-32 rounded-full bg-canvas" />
 
-              <div className="h-[320px] rounded-[2rem] border border-line bg-accent-50" />
+                <div className="mt-3 h-8 w-72 max-w-full rounded-xl bg-canvas" />
+
+                <div className="mt-3 h-5 w-full max-w-2xl rounded-full bg-canvas" />
+              </div>
             </div>
+
+            <div className="mt-5 h-[560px] rounded-[2rem] border border-line bg-white shadow-sm" />
+          </section>
+
+          <section>
+            <div className="flex gap-3">
+              <div className="h-9 w-9 rounded-xl bg-brand-900" />
+
+              <div className="flex-1">
+                <div className="h-3 w-24 rounded-full bg-canvas" />
+
+                <div className="mt-3 h-8 w-64 max-w-full rounded-xl bg-canvas" />
+              </div>
+            </div>
+
+            <div className="mt-5 h-52 rounded-[2rem] border border-line bg-white shadow-sm" />
+          </section>
+
+          <section>
+            <div className="flex gap-3">
+              <div className="h-9 w-9 rounded-xl bg-brand-900" />
+
+              <div className="flex-1">
+                <div className="h-3 w-28 rounded-full bg-canvas" />
+
+                <div className="mt-3 h-8 w-64 max-w-full rounded-xl bg-canvas" />
+              </div>
+            </div>
+
+            <div className="mt-5 h-96 rounded-[2rem] border border-line bg-white shadow-sm" />
           </section>
         </main>
       </div>
