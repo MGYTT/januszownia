@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorGroup,
@@ -235,11 +239,24 @@ export function PizzaCalculator() {
       </form>
 
       {result ? (
-        <PizzaResult
-          result={
-            result
-          }
-        />
+        <>
+          <PizzaResult
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="pizza-na-cebule"
+            toolTitle="Pizza na Cebulę"
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );
