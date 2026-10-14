@@ -6,6 +6,7 @@ export interface SaveCalculationPayload {
   toolSlug: string;
   toolVersion: number;
   title: string;
+  resultSummary: string;
   inputData: unknown;
   resultData: unknown;
 }
@@ -30,6 +31,7 @@ export interface SavedCalculationListItem {
   toolVersion: number;
 
   title: string;
+  resultSummary: string;
 
   createdAt: string;
 }
@@ -54,6 +56,7 @@ interface SavedCalculationRow {
   tool_version: number;
 
   title: string;
+  result_summary: string;
 
   created_at: string;
 }
@@ -192,6 +195,7 @@ export async function getSavedCalculations(
           tool_slug,
           tool_version,
           title,
+          result_summary,
           created_at
         `,
       )
@@ -242,6 +246,9 @@ export async function getSavedCalculations(
 
           title:
             row.title,
+
+          resultSummary:
+            row.result_summary,
 
           createdAt:
             row.created_at,
