@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -287,11 +291,24 @@ export function PowerCostCalculator() {
       </form>
 
       {result ? (
-        <PowerResult
-          result={
-            result
-          }
-        />
+        <>
+          <PowerResult
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="pradozerca"
+            toolTitle="Prądożerca"
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );
