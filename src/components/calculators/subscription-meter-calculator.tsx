@@ -538,6 +538,18 @@ export function SubscriptionMeterCalculator() {
           <SaveCalculationPanel
             toolSlug="abonamentometr"
             toolTitle="Abonamentometr"
+            resultSummary={
+              currencyFormatter.format(
+                result.totalCostPln,
+              ) +
+              " / " +
+              result.analysisMonths +
+              " mies. · " +
+              currencyFormatter.format(
+                result.averageMonthlyCostPln,
+              ) +
+              " / mies."
+            }
             inputData={
               form
             }
