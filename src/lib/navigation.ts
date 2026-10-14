@@ -1,4 +1,6 @@
-import type { IconName } from "@/components/ui/icon";
+import type {
+  IconName,
+} from "@/components/ui/icon";
 
 export interface NavigationItem {
   label: string;
@@ -6,89 +8,159 @@ export interface NavigationItem {
   icon?: IconName;
 }
 
-export const mainNavigation: NavigationItem[] = [
-  {
-    label: "Mapy",
-    href: "/mapy",
-    icon: "map-pin",
-  },
-  {
-    label: "Narzędzia",
-    href: "/narzedzia",
-    icon: "calculator",
-  },
-  {
-    label: "Społeczność",
-    href: "/spolecznosc",
-    icon: "users",
-  },
-  {
-    label: "Rozrywka",
-    href: "/rozrywka",
-    icon: "smile",
-  },
-];
+export const mainNavigation:
+  NavigationItem[] = [
+    {
+      label:
+        "Mapy",
 
-export const mobileNavigation: NavigationItem[] = [
-  {
-    label: "Start",
-    href: "/",
-    icon: "home",
-  },
-  {
-    label: "Mapy",
-    href: "/mapy",
-    icon: "map-pin",
-  },
-  {
-    label: "Narzędzia",
-    href: "/narzedzia",
-    icon: "calculator",
-  },
-  {
-    label: "Ludzie",
-    href: "/spolecznosc",
-    icon: "users",
-  },
-  {
-    label: "Beka",
-    href: "/rozrywka",
-    icon: "smile",
-  },
-];
+      href:
+        "/mapy",
+
+      icon:
+        "map-pin",
+    },
+
+    {
+      label:
+        "Narzędzia",
+
+      href:
+        "/narzedzia",
+
+      icon:
+        "calculator",
+    },
+
+    {
+      label:
+        "Społeczność",
+
+      href:
+        "/spolecznosc",
+
+      icon:
+        "users",
+    },
+
+    {
+      label:
+        "Rozrywka",
+
+      href:
+        "/rozrywka",
+
+      icon:
+        "smile",
+    },
+  ];
+
+export const mobileNavigation:
+  NavigationItem[] = [
+    {
+      label:
+        "Start",
+
+      href:
+        "/",
+
+      icon:
+        "home",
+    },
+
+    {
+      label:
+        "Mapy",
+
+      href:
+        "/mapy",
+
+      icon:
+        "map-pin",
+    },
+
+    {
+      label:
+        "Narzędzia",
+
+      href:
+        "/narzedzia",
+
+      icon:
+        "calculator",
+    },
+
+    {
+      label:
+        "Ludzie",
+
+      href:
+        "/spolecznosc",
+
+      icon:
+        "users",
+    },
+  ];
 
 export const footerNavigation = [
   {
-    title: "Januszownia",
+    title:
+      "Januszownia",
+
     links: [
       {
-        label: "Strona główna",
-        href: "/",
+        label:
+          "Strona główna",
+
+        href:
+          "/",
       },
+
       {
-        label: "O projekcie",
-        href: "/o-projekcie",
+        label:
+          "O projekcie",
+
+        href:
+          "/o-projekcie",
       },
     ],
   },
+
   {
-    title: "Portal",
+    title:
+      "Portal",
+
     links: [
       {
-        label: "Mapy",
-        href: "/mapy",
+        label:
+          "Mapy",
+
+        href:
+          "/mapy",
       },
+
       {
-        label: "Narzędzia",
-        href: "/narzedzia",
+        label:
+          "Narzędzia",
+
+        href:
+          "/narzedzia",
       },
+
       {
-        label: "Społeczność",
-        href: "/spolecznosc",
+        label:
+          "Społeczność",
+
+        href:
+          "/spolecznosc",
       },
+
       {
-        label: "Rozrywka",
-        href: "/rozrywka",
+        label:
+          "Rozrywka",
+
+        href:
+          "/rozrywka",
       },
     ],
   },
