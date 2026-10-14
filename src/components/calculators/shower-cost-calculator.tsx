@@ -369,6 +369,16 @@ export function ShowerCostCalculator() {
           <SaveCalculationPanel
             toolSlug="prysznicometr"
             toolTitle="Prysznicometr"
+            resultSummary={
+              currencyFormatter.format(
+                result.totalCostPerShowerPln,
+              ) +
+              " / prysznic · " +
+              currencyFormatter.format(
+                result.totalCostPerMonthPln,
+              ) +
+              " / mies."
+            }
             inputData={
               form
             }
