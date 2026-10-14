@@ -5,8 +5,8 @@ import type {
 import Link from "next/link";
 
 import {
-  deleteSavedCalculation,
-} from "@/app/konto/obliczenia/actions";
+  DeleteSavedCalculationButton,
+} from "@/components/account/delete-saved-calculation-button";
 
 import {
   Icon,
@@ -70,10 +70,11 @@ export default async function SavedCalculationsPage({
       getAvailableTools().map(
         (
           tool,
-        ) => [
-          tool.slug,
-          tool,
-        ],
+        ) =>
+          [
+            tool.slug,
+            tool,
+          ] as const,
       ),
     );
 
@@ -331,26 +332,11 @@ function SavedCalculationRow({
           </span>
         )}
 
-        <form
-          action={
-            deleteSavedCalculation
+        <DeleteSavedCalculationButton
+          id={
+            id
           }
-        >
-          <input
-            type="hidden"
-            name="id"
-            value={
-              id
-            }
-          />
-
-          <button
-            type="submit"
-            className="min-h-10 w-full rounded-button border border-line bg-white px-4 py-2 text-xs font-black text-muted transition hover:border-danger-600/30 hover:bg-danger-50 hover:text-danger-600"
-          >
-            Usuń zapis
-          </button>
-        </form>
+        />
       </div>
     </article>
   );
