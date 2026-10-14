@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -251,11 +255,24 @@ export function UnitPriceCalculator() {
       </form>
 
       {result ? (
-        <ComparisonResult
-          result={
-            result
-          }
-        />
+        <>
+          <ComparisonResult
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="cena-jednostkowa"
+            toolTitle="Cena Jednostkowa"
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );
