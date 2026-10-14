@@ -118,6 +118,10 @@ export async function getAccountDashboardSummary(
             head:
               true,
           },
+        )
+        .eq(
+          "is_active",
+          true,
         ),
 
       supabase
