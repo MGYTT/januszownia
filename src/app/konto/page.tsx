@@ -4,10 +4,6 @@ import type {
 
 import Link from "next/link";
 
-import type {
-  ReactNode,
-} from "react";
-
 import {
   signOut,
   updateProfile,
@@ -176,6 +172,10 @@ export default async function AccountPage({
   const levelCount =
     DEFAULT_REPUTATION_LEVELS.length;
 
+  const activityCount =
+    dashboard.placeSubmissionsCount +
+    dashboard.placeReportsCount;
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
       {params.message ? (
@@ -328,6 +328,17 @@ export default async function AccountPage({
                 />
 
                 <AccountNavLink
+                  href="/konto/aktywnosc"
+                  icon="route"
+                  label="Kronika"
+                  detail={
+                    String(
+                      activityCount,
+                    )
+                  }
+                />
+
+                <AccountNavLink
                   href="/konto/osiagniecia"
                   icon="trophy"
                   label="Osiągnięcia"
@@ -420,76 +431,129 @@ export default async function AccountPage({
           </section>
         </aside>
 
-        <main className="min-w-0">
-          <section className="rounded-[2rem] border border-line bg-white p-6 shadow-sm sm:p-8">
-            <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-              <div className="max-w-2xl">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-brand-700">
-                  Pulpit gospodarza
-                </p>
+        <main className="min-w-0 space-y-8">
+          <section className="overflow-hidden rounded-[2rem] border border-line bg-white shadow-sm">
+            <div className="p-6 sm:p-8">
+              <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                <div className="max-w-2xl">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-brand-700">
+                    Panel konta
+                  </p>
 
-                <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] sm:text-4xl">
-                  Tu trzymasz cały
-                  cebulowy majątek.
-                </h2>
+                  <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] sm:text-4xl">
+                    Dzień dobry,{" "}
+                    {displayName}.
+                  </h2>
 
-                <p className="mt-4 text-sm leading-6 text-muted sm:text-base">
-                  Kolekcje, odznaki,
-                  Cebuliony, prywatność
-                  i ustawienia profilu.
-                  Bez biegania po urzędach
-                  i bez pytania „gdzie to
-                  było?”.
-                </p>
+                  <p className="mt-3 text-sm leading-6 text-muted sm:text-base">
+                    Tu sprawdzasz, co już
+                    masz, co zrobiłeś i jak
+                    wygląda Twoje konto.
+                    Skróty do konkretnych
+                    funkcji są w Teczce po
+                    lewej — tutaj zostają
+                    tylko najważniejsze
+                    informacje.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <AccountBadge
+                    text={
+                      roleName(
+                        profile.role,
+                      )
+                    }
+                  />
+
+                  <AccountBadge
+                    text={
+                      "Konto od " +
+                      formatDate(
+                        profile.created_at,
+                      )
+                    }
+                  />
+                </div>
               </div>
+            </div>
 
-              <div className="flex flex-wrap gap-2">
-                <AccountBadge>
-                  {roleName(
-                    profile.role,
-                  )}
-                </AccountBadge>
+            <div className="grid grid-cols-2 gap-px border-t border-line bg-line lg:grid-cols-4">
+              <OverviewMetric
+                label="Zapisane miejsca"
+                value={
+                  dashboard.savedPlaceEntriesCount
+                }
+                detail={
+                  dashboard.collectionsCount +
+                  " kolekcji"
+                }
+              />
 
-                <AccountBadge>
-                  Konto od{" "}
-                  {formatDate(
-                    profile.created_at,
-                  )}
-                </AccountBadge>
-              </div>
+              <OverviewMetric
+                label="Osiągnięcia"
+                value={
+                  dashboard.unlockedAchievementsCount
+                }
+                detail={
+                  "z " +
+                  dashboard.totalAchievementsCount
+                }
+              />
+
+              <OverviewMetric
+                label="Aktywność"
+                value={
+                  activityCount
+                }
+                detail="wpisów w Kronice"
+              />
+
+              <OverviewMetric
+                label="Powiadomienia"
+                value={
+                  dashboard.unreadNotificationsCount
+                }
+                detail={
+                  dashboard.unreadNotificationsCount >
+                  0
+                    ? "czeka na przeczytanie"
+                    : "wszystko przeczytane"
+                }
+              />
             </div>
           </section>
 
           {!profileReady ? (
-            <section className="mt-5 overflow-hidden rounded-[1.5rem] border border-accent-200 bg-accent-50">
-              <div className="grid gap-4 p-5 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:p-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-accent-700 shadow-sm">
+            <section className="rounded-[1.5rem] border border-accent-200 bg-accent-50 p-5 sm:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-accent-700 shadow-sm">
                   <Icon
                     name="users"
                     className="h-5 w-5"
                   />
                 </div>
 
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-xs font-black uppercase tracking-[0.12em] text-accent-700">
-                    Papierologia
+                    Do załatwienia
                   </p>
 
                   <h2 className="mt-1 font-black text-ink">
-                    Profil jeszcze nie ma wszystkich pieczątek.
+                    Profil nie ma jeszcze wszystkich pieczątek.
                   </h2>
 
                   <p className="mt-1 text-sm leading-6 text-muted">
-                    Ustaw nazwę i nick.
+                    Uzupełnij nazwę i nick.
                     Nick będzie potrzebny,
-                    jeśli zechcesz pokazać
+                    jeśli zechcesz włączyć
                     publiczny profil.
                   </p>
                 </div>
 
                 <a
                   href="#dane-profilu"
-                  className="inline-flex min-h-11 items-center justify-center rounded-button bg-white px-4 py-2.5 text-sm font-black text-brand-700 shadow-sm transition hover:bg-brand-50"
+                  className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-button bg-white px-4 py-2.5 text-sm font-black text-brand-700 shadow-sm transition hover:bg-brand-50"
                 >
                   Uzupełnij profil
                 </a>
@@ -497,339 +561,305 @@ export default async function AccountPage({
             </section>
           ) : null}
 
-          <section className="mt-8">
-            <SectionTitle
-              kicker="Szybki dostęp"
-              title="Najczęściej otwierane szuflady"
-              description="Duże, jednoznaczne skróty. Klikasz i od razu jesteś tam, gdzie trzeba."
+          <section>
+            <SectionHeading
+              number="01"
+              kicker="Reputacja i wkład"
+              title="Co wypracowałeś w Januszowni"
+              description="Jeden blok zamiast kilku osobnych kart. Tu masz poziom, postęp, wkład społecznościowy i ostatnie nagrody."
             />
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <QuickAction
-                href="/konto/kolekcje"
-                icon="grid"
-                eyebrow="Szafka"
-                title="Moje miejsca"
-                detail={
-                  dashboard.savedPlaceEntriesCount +
-                  " zapisów"
-                }
-              />
+            <article className="mt-5 overflow-hidden rounded-[2rem] border border-line bg-white shadow-sm">
+              <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.12em] text-brand-700">
+                    Aktualny poziom
+                  </p>
 
-              <QuickAction
-                href="/konto/osiagniecia"
-                icon="trophy"
-                eyebrow="Gablotka"
-                title="Osiągnięcia"
-                detail={
-                  dashboard.unlockedAchievementsCount +
-                  "/" +
-                  dashboard.totalAchievementsCount
-                }
-              />
+                  <h3 className="mt-2 text-2xl font-black tracking-[-0.03em]">
+                    {
+                      reputation.level
+                        .name
+                    }
+                  </h3>
 
-              <QuickAction
-                href="/powiadomienia"
-                icon="sparkles"
-                eyebrow="Listonosz"
-                title="Powiadomienia"
-                detail={
-                  dashboard.unreadNotificationsCount >
-                  0
-                    ? dashboard.unreadNotificationsCount +
-                      " nowych"
-                    : "Cisza i spokój"
-                }
-              />
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+                    {
+                      reputation.level
+                        .description
+                    }
+                  </p>
 
-              <QuickAction
-                href="/mapy/dodaj"
-                icon="map-pin"
-                eyebrow="Mapa"
-                title="Dodaj miejsce"
-                detail="Dorzuć punkt"
-              />
-            </div>
-          </section>
-
-          <section className="mt-9">
-            <SectionTitle
-              kicker="Dorobek"
-              title="Co już wypracowałeś"
-              description="Tu liczy się efekt. Cebuliony nie rosną od samego klikania."
-            />
-
-            <div className="mt-5 grid gap-5 xl:grid-cols-[1.35fr_0.65fr]">
-              <article className="overflow-hidden rounded-[2rem] border border-line bg-white shadow-sm">
-                <div className="grid gap-6 p-6 sm:p-7 lg:grid-cols-[minmax(0,1fr)_auto]">
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-[0.14em] text-brand-700">
-                      Portfel Cebulionów
-                    </p>
-
-                    <h3 className="mt-2 text-2xl font-black">
-                      {
-                        reputation.level
-                          .name
-                      }
-                    </h3>
-
-                    <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
-                      {
-                        reputation.level
-                          .description
-                      }
-                    </p>
-                  </div>
-
-                  <div className="rounded-[1.5rem] bg-brand-900 px-6 py-5 text-white">
-                    <p className="text-xs font-black uppercase tracking-[0.12em] text-brand-200">
-                      Stan konta
-                    </p>
-
-                    <p className="mt-1 text-4xl font-black tracking-[-0.04em]">
-                      {
-                        reputation.cebulions
-                      }
-                    </p>
-
-                    <p className="mt-1 text-xs font-bold text-brand-100">
-                      Cebulionów
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border-t border-line bg-canvas p-6 sm:p-7">
-                  <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-                    <div>
-                      <p className="font-black text-ink">
-                        {reputation.level
-                          .nextLevelName
-                          ? "Następny awans: " +
+                  {reputation.level
+                    .nextLevelPoints !==
+                  null ? (
+                    <div className="mt-6">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <p className="text-sm font-black">
+                          Następny szczebel:{" "}
+                          {
                             reputation.level
                               .nextLevelName
-                          : "Najwyższy szczebel osiągnięty"}
-                      </p>
+                          }
+                        </p>
 
-                      <p className="mt-1 text-xs text-muted">
-                        {reputation.level
-                          .nextLevelPoints !==
-                        null
-                          ? reputation.level
-                              .pointsToNext +
-                            " Cebulionów zostało do awansu."
-                          : "Wyżej jest już tylko legenda przy rodzinnym stole."}
-                      </p>
-                    </div>
+                        <p className="text-xs font-bold text-muted">
+                          {
+                            reputation.level
+                              .pointsToNext
+                          }{" "}
+                          Cebulionów brakuje
+                        </p>
+                      </div>
 
-                    <Link
-                      href="/konto/poziomy"
-                      className="inline-flex min-h-10 items-center gap-2 rounded-button border border-line bg-white px-4 py-2 text-xs font-black transition hover:bg-brand-50"
-                    >
-                      Zobacz poziomy
-
-                      <Icon
-                        name="arrow-right"
-                        className="h-3.5 w-3.5"
-                      />
-                    </Link>
-                  </div>
-
-                  <div
-                    className="mt-4 h-3 overflow-hidden rounded-full bg-brand-100"
-                    role="progressbar"
-                    aria-label="Postęp do następnego poziomu"
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={
-                      reputation.level
-                        .progressPercent
-                    }
-                  >
-                    <div
-                      className="h-full rounded-full bg-brand-600"
-                      style={{
-                        width:
-                          `${reputation.level.progressPercent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-6 sm:p-7">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-[0.12em] text-muted">
-                        Kronika sukcesów
-                      </p>
-
-                      <h4 className="mt-1 font-black">
-                        Ostatnie nagrodzone działania
-                      </h4>
-                    </div>
-
-                    <span className="rounded-full bg-brand-50 px-3 py-1.5 text-xs font-black text-brand-700">
-                      {
-                        reputation.rewardedActions
-                      }{" "}
-                      łącznie
-                    </span>
-                  </div>
-
-                  {recentReputation.length ===
-                  0 ? (
-                    <div className="mt-4 rounded-2xl border border-dashed border-line bg-canvas p-5">
-                      <p className="font-black">
-                        Na razie pusto jak półka po promocji.
-                      </p>
-
-                      <p className="mt-1 text-sm leading-6 text-muted">
-                        Pierwsze wpisy pojawią się po zatwierdzeniu wartościowego działania.
-                      </p>
+                      <div
+                        className="mt-3 h-3 overflow-hidden rounded-full bg-brand-100"
+                        role="progressbar"
+                        aria-label="Postęp do następnego poziomu"
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={
+                          reputation.level
+                            .progressPercent
+                        }
+                      >
+                        <div
+                          className="h-full rounded-full bg-brand-600"
+                          style={{
+                            width:
+                              `${reputation.level.progressPercent}%`,
+                          }}
+                        />
+                      </div>
                     </div>
                   ) : (
-                    <div className="mt-3 divide-y divide-line">
-                      {recentReputation.map(
-                        (
-                          entry,
-                        ) => (
-                          <div
-                            key={
-                              entry.id
-                            }
-                            className="flex items-center justify-between gap-4 py-3.5"
-                          >
-                            <div>
-                              <p className="text-sm font-black">
-                                {eventLabel(
-                                  entry.event_type,
-                                )}
-                              </p>
-
-                              <p className="mt-1 text-xs text-muted">
-                                {formatDateTime(
-                                  entry.created_at,
-                                )}
-                              </p>
-                            </div>
-
-                            <span className="shrink-0 rounded-full bg-brand-50 px-3 py-1.5 text-sm font-black text-brand-700">
-                              +
-                              {
-                                entry.points
-                              }
-                            </span>
-                          </div>
-                        ),
-                      )}
+                    <div className="mt-6 rounded-2xl bg-accent-50 p-4 text-sm font-black text-accent-700">
+                      Masz najwyższy poziom.
+                      Dalej jest już tylko
+                      opowiadanie o tym przy
+                      grillu.
                     </div>
                   )}
                 </div>
-              </article>
 
-              <div className="space-y-5">
-                <article className="rounded-[2rem] border border-line bg-accent-50 p-6">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-accent-700 shadow-sm">
-                    <Icon
-                      name="map-pin"
-                      className="h-5 w-5"
-                    />
-                  </div>
-
-                  <p className="mt-5 text-xs font-black uppercase tracking-[0.12em] text-accent-700">
-                    Dorobek na mapie
+                <div className="rounded-[1.5rem] bg-brand-900 p-5 text-white">
+                  <p className="text-xs font-black uppercase tracking-[0.12em] text-brand-200">
+                    Portfel Cebulionów
                   </p>
 
-                  <h3 className="mt-1 text-xl font-black">
-                    Co dorzuciłeś do wspólnego stołu
-                  </h3>
-
-                  <div className="mt-5 grid grid-cols-2 gap-3">
-                    <ContributionStat
-                      value={
-                        dashboard.placeSubmissionsCount
-                      }
-                      label="miejsca"
-                    />
-
-                    <ContributionStat
-                      value={
-                        dashboard.placeReportsCount
-                      }
-                      label="raporty"
-                    />
-                  </div>
-
-                  <p className="mt-4 text-xs leading-5 text-muted">
-                    Punkty wpadają za zweryfikowany efekt, nie za samo wysłanie formularza. Tak jest uczciwiej i mniej spamersko.
+                  <p className="mt-2 text-4xl font-black tracking-[-0.05em]">
+                    {
+                      reputation.cebulions
+                    }
                   </p>
 
+                  <p className="mt-1 text-xs font-bold text-brand-100">
+                    {
+                      reputation.rewardedActions
+                    }{" "}
+                    nagrodzonych działań
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t border-line bg-canvas p-6 sm:p-8">
+                <p className="text-xs font-black uppercase tracking-[0.12em] text-muted">
+                  Twój wkład
+                </p>
+
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  <ContributionMetric
+                    value={
+                      dashboard.placeSubmissionsCount
+                    }
+                    label="zgłoszone miejsca"
+                  />
+
+                  <ContributionMetric
+                    value={
+                      dashboard.placeReportsCount
+                    }
+                    label="raporty problemów"
+                  />
+
+                  <ContributionMetric
+                    value={
+                      reputation.rewardedActions
+                    }
+                    label="nagrodzone działania"
+                    wide
+                  />
+                </div>
+
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                   <Link
-                    href="/spolecznosc"
-                    className="mt-5 inline-flex items-center gap-2 text-sm font-black text-brand-700 hover:underline"
+                    href="/konto/aktywnosc"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-button bg-brand-600 px-5 py-2.5 text-sm font-black text-white transition hover:bg-brand-700"
                   >
-                    Jak działa wkład
+                    Otwórz Kronikę
 
                     <Icon
-                      name="arrow-right"
+                      name="route"
                       className="h-4 w-4"
                     />
                   </Link>
-                </article>
 
-                {isStaff ? (
-                  <article className="rounded-[2rem] border border-brand-200 bg-brand-50 p-6">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-brand-700 shadow-sm">
-                      <Icon
-                        name="shield-check"
-                        className="h-5 w-5"
-                      />
-                    </div>
+                  <Link
+                    href="/mapy/dodaj"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-button border border-line bg-white px-5 py-2.5 text-sm font-black transition hover:bg-brand-50"
+                  >
+                    Dodaj miejsce
 
-                    <p className="mt-5 text-xs font-black uppercase tracking-[0.12em] text-brand-700">
-                      Tylko dla ekipy
-                    </p>
+                    <Icon
+                      name="map-pin"
+                      className="h-4 w-4 text-brand-700"
+                    />
+                  </Link>
 
-                    <h3 className="mt-1 text-xl font-black">
-                      Biurko moderatora
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-6 text-muted">
-                      Tu kończy się cebulowanie, a zaczyna urzędowa robota: zgłoszenia miejsc i raporty społeczności.
-                    </p>
-
-                    <Link
-                      href="/moderacja"
-                      className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-button bg-brand-900 px-5 py-2.5 text-sm font-black text-white transition hover:bg-brand-800"
-                    >
-                      Otwórz moderację
-
-                      <Icon
-                        name="arrow-right"
-                        className="h-4 w-4"
-                      />
-                    </Link>
-                  </article>
-                ) : null}
+                  <Link
+                    href="/konto/poziomy"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-button border border-line bg-white px-5 py-2.5 text-sm font-black transition hover:bg-brand-50"
+                  >
+                    Zobacz poziomy
+                  </Link>
+                </div>
               </div>
-            </div>
+
+              <div className="border-t border-line p-6 sm:p-8">
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.12em] text-brand-700">
+                      Ostatnie nagrody
+                    </p>
+
+                    <h3 className="mt-1 text-lg font-black">
+                      Co ostatnio wpadło do portfela
+                    </h3>
+                  </div>
+
+                  <Link
+                    href="/konto/aktywnosc?filter=cebulions"
+                    className="text-xs font-black text-brand-700 hover:underline"
+                  >
+                    Pełna historia →
+                  </Link>
+                </div>
+
+                {recentReputation.length ===
+                0 ? (
+                  <div className="mt-4 rounded-2xl border border-dashed border-line bg-canvas p-5">
+                    <p className="font-black">
+                      Portfel jeszcze czeka
+                      na pierwszy konkretny
+                      zarobek.
+                    </p>
+
+                    <p className="mt-1 text-sm leading-6 text-muted">
+                      Cebuliony pojawią się
+                      po zaakceptowaniu
+                      wartościowego miejsca
+                      albo trafnego raportu.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mt-4 divide-y divide-line rounded-2xl border border-line">
+                    {recentReputation.map(
+                      (
+                        entry,
+                      ) => (
+                        <div
+                          key={
+                            entry.id
+                          }
+                          className="flex items-center justify-between gap-4 px-4 py-3.5"
+                        >
+                          <div>
+                            <p className="text-sm font-black">
+                              {eventLabel(
+                                entry.event_type,
+                              )}
+                            </p>
+
+                            <p className="mt-1 text-xs text-muted">
+                              {formatDateTime(
+                                entry.created_at,
+                              )}
+                            </p>
+                          </div>
+
+                          <span className="shrink-0 rounded-full bg-brand-50 px-3 py-1.5 text-sm font-black text-brand-700">
+                            +
+                            {
+                              entry.points
+                            }
+                          </span>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                )}
+              </div>
+            </article>
           </section>
+
+          {isStaff ? (
+            <section className="rounded-[1.5rem] border border-brand-200 bg-brand-50 p-5 sm:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-brand-700 shadow-sm">
+                  <Icon
+                    name="shield-check"
+                    className="h-5 w-5"
+                  />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-black uppercase tracking-[0.12em] text-brand-700">
+                    Tylko dla ekipy
+                  </p>
+
+                  <h2 className="mt-1 font-black">
+                    Biurko moderatora czeka.
+                  </h2>
+
+                  <p className="mt-1 text-sm leading-6 text-muted">
+                    Zgłoszenia miejsc i
+                    raporty społeczności są
+                    w osobnym panelu
+                    moderacyjnym.
+                  </p>
+                </div>
+
+                <Link
+                  href="/moderacja"
+                  className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-button bg-brand-900 px-5 py-2.5 text-sm font-black text-white transition hover:bg-brand-800"
+                >
+                  Otwórz moderację
+
+                  <Icon
+                    name="arrow-right"
+                    className="h-4 w-4"
+                  />
+                </Link>
+              </div>
+            </section>
+          ) : null}
 
           <section
             id="prywatnosc"
-            className="mt-9 scroll-mt-24"
+            className="scroll-mt-24"
           >
-            <SectionTitle
+            <SectionHeading
+              number="02"
               kicker="Prywatność"
-              title="Kto może zaglądać przez płot?"
-              description="Pomaganie Januszowni nie oznacza obowiązku wystawiania całego konta na widok publiczny."
+              title="Co pokazujesz innym"
+              description="Dwa ustawienia, dwa osobne znaczenia. Bez drobnego druku i bez szukania, co właściwie jest publiczne."
             />
 
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <PrivacyOption
+            <div className="mt-5 overflow-hidden rounded-[2rem] border border-line bg-white shadow-sm">
+              <SettingRow
                 href="/konto/publiczny-profil"
                 icon="users"
-                label="Publiczny profil"
+                title="Publiczny profil"
                 status={
                   !profile.username
                     ? "Najpierw ustaw nick"
@@ -843,17 +873,15 @@ export default async function AccountPage({
                   ) &&
                   dashboard.showPublicProfile
                 }
-              >
-                Decyduje, czy inni mogą
-                otworzyć Twój profil,
-                poziom, Cebuliony i
-                publiczne statystyki.
-              </PrivacyOption>
+                description="Decyduje, czy inni mogą otworzyć Twój profil, zobaczyć poziom, Cebuliony i publiczne statystyki."
+              />
 
-              <PrivacyOption
+              <div className="border-t border-line" />
+
+              <SettingRow
                 href="/ranking"
                 icon="trophy"
-                label="Ranking Cebularzy"
+                title="Ranking Cebularzy"
                 status={
                   dashboard.showInLeaderboard
                     ? "Pokazujesz się"
@@ -862,194 +890,131 @@ export default async function AccountPage({
                 enabled={
                   dashboard.showInLeaderboard
                 }
-              >
-                Ranking jest osobnym
-                ustawieniem. Możesz mieć
-                konto i reputację bez
-                udziału w publicznej
-                tabeli.
-              </PrivacyOption>
+                description="To osobne ustawienie. Możesz korzystać z reputacji i konta bez udziału w publicznym rankingu."
+              />
             </div>
           </section>
 
           <section
             id="dane-profilu"
-            className="mt-9 scroll-mt-24 overflow-hidden rounded-[2rem] border border-line bg-white shadow-sm"
+            className="scroll-mt-24"
           >
-            <div className="grid lg:grid-cols-[0.75fr_1.25fr]">
-              <div className="border-b border-line bg-canvas p-6 sm:p-8 lg:border-b-0 lg:border-r">
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-brand-700">
-                  Dane profilu
-                </p>
+            <SectionHeading
+              number="03"
+              kicker="Dane profilu"
+              title="Papierologia osobowa"
+              description="Tu zmieniasz tylko dane, którymi podpisujesz się w Januszowni. Cebuliony, osiągnięcia i zapisane miejsca zostają nietknięte."
+            />
 
-                <h2 className="mt-2 text-2xl font-black tracking-[-0.03em]">
-                  Papierologia osobowa
-                </h2>
+            <div className="mt-5 overflow-hidden rounded-[2rem] border border-line bg-white shadow-sm">
+              <div className="grid border-b border-line bg-canvas sm:grid-cols-2">
+                <AccountInfo
+                  label="E-mail konta"
+                  value={
+                    user.email ??
+                    "Brak e-maila"
+                  }
+                />
 
-                <p className="mt-3 text-sm leading-6 text-muted">
-                  Nazwa wyświetlana i nick
-                  pojawiają się w funkcjach
-                  społecznościowych. E-mail
-                  zostaje prywatną daną
-                  logowania.
-                </p>
-
-                <div className="mt-6 rounded-2xl border border-line bg-white p-4">
-                  <p className="text-xs font-bold text-muted">
-                    E-mail konta
-                  </p>
-
-                  <p className="mt-1 break-all text-sm font-black text-ink">
-                    {user.email ??
-                      "Brak e-maila"}
-                  </p>
-                </div>
-
-                <div className="mt-4 rounded-2xl border border-line bg-white p-4">
-                  <p className="text-xs font-bold text-muted">
-                    Status konta
-                  </p>
-
-                  <p className="mt-1 text-sm font-black text-ink">
-                    {roleName(
+                <AccountInfo
+                  label="Status konta"
+                  value={
+                    roleName(
                       profile.role,
-                    )}
-                    {" · "}
-                    od{" "}
-                    {formatDate(
+                    ) +
+                    " · od " +
+                    formatDate(
                       profile.created_at,
-                    )}
-                  </p>
-                </div>
+                    )
+                  }
+                  bordered
+                />
               </div>
 
               <form
                 action={updateProfile}
-                className="space-y-6 p-6 sm:p-8"
+                className="p-6 sm:p-8"
               >
-                <div>
-                  <label
-                    htmlFor="displayName"
-                    className="mb-2 block text-sm font-black"
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor="displayName"
+                      className="mb-2 block text-sm font-black"
+                    >
+                      Nazwa wyświetlana
+                    </label>
+
+                    <input
+                      id="displayName"
+                      name="displayName"
+                      type="text"
+                      minLength={2}
+                      maxLength={60}
+                      required
+                      defaultValue={
+                        profile.display_name ??
+                        ""
+                      }
+                      autoComplete="name"
+                      className="h-12 w-full rounded-xl border border-line bg-canvas px-4 text-base font-semibold outline-none transition placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
+                    />
+
+                    <p className="mt-2 text-xs leading-5 text-muted">
+                      Imię, pseudonim albo
+                      normalna nazwa, którą
+                      pokazujemy w serwisie.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="username"
+                      className="mb-2 block text-sm font-black"
+                    >
+                      Nick
+                    </label>
+
+                    <input
+                      id="username"
+                      name="username"
+                      type="text"
+                      minLength={3}
+                      maxLength={24}
+                      pattern="[a-zA-Z0-9_]{3,24}"
+                      defaultValue={
+                        profile.username ??
+                        ""
+                      }
+                      placeholder="np. Mirek_Cebula"
+                      autoComplete="username"
+                      className="h-12 w-full rounded-xl border border-line bg-canvas px-4 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
+                    />
+
+                    <p className="mt-2 text-xs leading-5 text-muted">
+                      3–24 znaki. Litery,
+                      cyfry i _. Nick jest
+                      częścią adresu
+                      publicznego profilu.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="max-w-xl text-xs leading-5 text-muted">
+                    Bez niespodzianek:
+                    zmiana tych pól nie
+                    zeruje punktów, poziomu,
+                    osiągnięć ani kolekcji.
+                  </p>
+
+                  <button
+                    type="submit"
+                    className="min-h-12 shrink-0 rounded-button bg-brand-600 px-5 py-3 font-black text-white transition hover:bg-brand-700"
                   >
-                    Nazwa wyświetlana
-                  </label>
-
-                  <input
-                    id="displayName"
-                    name="displayName"
-                    type="text"
-                    minLength={2}
-                    maxLength={60}
-                    required
-                    defaultValue={
-                      profile.display_name ??
-                      ""
-                    }
-                    autoComplete="name"
-                    className="h-12 w-full rounded-xl border border-line bg-canvas px-4 text-base font-semibold outline-none transition placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
-                  />
-
-                  <p className="mt-2 text-xs leading-5 text-muted">
-                    Normalna nazwa, którą
-                    pokazujemy w Januszowni.
-                    Może być imię albo
-                    pseudonim.
-                  </p>
+                    Zapisz dane profilu
+                  </button>
                 </div>
-
-                <div>
-                  <label
-                    htmlFor="username"
-                    className="mb-2 block text-sm font-black"
-                  >
-                    Nick
-                  </label>
-
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    minLength={3}
-                    maxLength={24}
-                    pattern="[a-zA-Z0-9_]{3,24}"
-                    defaultValue={
-                      profile.username ??
-                      ""
-                    }
-                    placeholder="np. Mirek_Cebula"
-                    autoComplete="username"
-                    className="h-12 w-full rounded-xl border border-line bg-canvas px-4 text-base font-semibold outline-none transition placeholder:font-normal placeholder:text-subtle focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100"
-                  />
-
-                  <p className="mt-2 text-xs leading-5 text-muted">
-                    3–24 znaki. Litery,
-                    cyfry i znak _. Jeśli
-                    włączysz publiczny
-                    profil, nick trafi do
-                    jego adresu.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-brand-50 p-4">
-                  <p className="text-sm font-black text-brand-800">
-                    Bez drobnego druku
-                  </p>
-
-                  <p className="mt-1 text-xs leading-5 text-muted">
-                    Zmiana nazwy i nicku
-                    nie zmienia Twoich
-                    Cebulionów, poziomu,
-                    osiągnięć ani zapisanych
-                    miejsc.
-                  </p>
-                </div>
-
-                <button
-                  type="submit"
-                  className="min-h-12 w-full rounded-button bg-brand-600 px-5 py-3 font-black text-white transition hover:bg-brand-700 sm:w-auto"
-                >
-                  Zapisz papierologię
-                </button>
               </form>
-            </div>
-          </section>
-
-          <section className="mt-6 rounded-[1.5rem] border border-line bg-canvas p-5 sm:flex sm:items-center sm:justify-between sm:gap-5">
-            <div>
-              <p className="font-black">
-                Wszystko na swoim miejscu?
-              </p>
-
-              <p className="mt-1 text-sm leading-6 text-muted">
-                W takim razie można wracać do mapy, narzędzi albo dalszego rozsądnego kombinowania.
-              </p>
-            </div>
-
-            <div className="mt-4 flex flex-col gap-2 sm:mt-0 sm:flex-row">
-              <Link
-                href="/mapy"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-button border border-line bg-white px-4 py-2.5 text-sm font-black transition hover:bg-brand-50"
-              >
-                Mapa
-
-                <Icon
-                  name="map-pin"
-                  className="h-4 w-4 text-brand-700"
-                />
-              </Link>
-
-              <Link
-                href="/narzedzia"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-button bg-brand-600 px-4 py-2.5 text-sm font-black text-white transition hover:bg-brand-700"
-              >
-                Narzędzia
-
-                <Icon
-                  name="calculator"
-                  className="h-4 w-4"
-                />
-              </Link>
             </div>
           </section>
         </main>
@@ -1125,23 +1090,58 @@ function AccountNavLink({
 }
 
 function AccountBadge({
-  children,
+  text,
 }: {
-  children:
-    ReactNode;
+  text:
+    string;
 }) {
   return (
     <span className="rounded-full border border-line bg-canvas px-3 py-1.5 text-xs font-black text-muted">
-      {children}
+      {text}
     </span>
   );
 }
 
-function SectionTitle({
+function OverviewMetric({
+  label,
+  value,
+  detail,
+}: {
+  label:
+    string;
+
+  value:
+    number;
+
+  detail:
+    string;
+}) {
+  return (
+    <div className="bg-canvas p-4 sm:p-5">
+      <p className="text-xs font-bold text-muted">
+        {label}
+      </p>
+
+      <p className="mt-1 text-2xl font-black tracking-[-0.03em] text-ink">
+        {value}
+      </p>
+
+      <p className="mt-1 text-[11px] font-semibold text-subtle">
+        {detail}
+      </p>
+    </div>
+  );
+}
+
+function SectionHeading({
+  number,
   kicker,
   title,
   description,
 }: {
+  number:
+    string;
+
   kicker:
     string;
 
@@ -1152,112 +1152,68 @@ function SectionTitle({
     string;
 }) {
   return (
-    <div className="max-w-3xl">
-      <p className="text-xs font-black uppercase tracking-[0.14em] text-brand-700">
-        {kicker}
-      </p>
+    <div className="grid gap-3 sm:grid-cols-[44px_minmax(0,1fr)] sm:items-start">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-900 text-xs font-black text-white">
+        {number}
+      </div>
 
-      <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] sm:text-3xl">
-        {title}
-      </h2>
+      <div className="max-w-3xl">
+        <p className="text-xs font-black uppercase tracking-[0.14em] text-brand-700">
+          {kicker}
+        </p>
 
-      <p className="mt-2 text-sm leading-6 text-muted sm:text-base">
-        {description}
-      </p>
+        <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] sm:text-3xl">
+          {title}
+        </h2>
+
+        <p className="mt-2 text-sm leading-6 text-muted sm:text-base">
+          {description}
+        </p>
+      </div>
     </div>
   );
 }
 
-function QuickAction({
-  href,
-  icon,
-  eyebrow,
-  title,
-  detail,
-}: {
-  href:
-    string;
-
-  icon:
-    IconName;
-
-  eyebrow:
-    string;
-
-  title:
-    string;
-
-  detail:
-    string;
-}) {
-  return (
-    <Link
-      href={
-        href
-      }
-      className="group rounded-[1.5rem] border border-line bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-card"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
-          <Icon
-            name={
-              icon
-            }
-            className="h-5 w-5"
-          />
-        </div>
-
-        <Icon
-          name="arrow-right"
-          className="h-4 w-4 text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-brand-700"
-        />
-      </div>
-
-      <p className="mt-4 text-[10px] font-black uppercase tracking-[0.12em] text-brand-700">
-        {eyebrow}
-      </p>
-
-      <h3 className="mt-1 font-black">
-        {title}
-      </h3>
-
-      <p className="mt-1 text-xs font-semibold text-muted">
-        {detail}
-      </p>
-    </Link>
-  );
-}
-
-function ContributionStat({
+function ContributionMetric({
   value,
   label,
+  wide = false,
 }: {
   value:
     number;
 
   label:
     string;
+
+  wide?:
+    boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-accent-200 bg-white p-4">
-      <p className="text-3xl font-black tracking-[-0.03em] text-accent-700">
+    <div
+      className={
+        wide
+          ? "col-span-2 rounded-2xl border border-line bg-white p-4 sm:col-span-1"
+          : "rounded-2xl border border-line bg-white p-4"
+      }
+    >
+      <p className="text-2xl font-black text-brand-800">
         {value}
       </p>
 
-      <p className="mt-1 text-xs font-bold text-muted">
+      <p className="mt-1 text-xs font-semibold leading-5 text-muted">
         {label}
       </p>
     </div>
   );
 }
 
-function PrivacyOption({
+function SettingRow({
   href,
   icon,
-  label,
+  title,
   status,
   enabled,
-  children,
+  description,
 }: {
   href:
     string;
@@ -1265,7 +1221,7 @@ function PrivacyOption({
   icon:
     IconName;
 
-  label:
+  title:
     string;
 
   status:
@@ -1274,47 +1230,49 @@ function PrivacyOption({
   enabled:
     boolean;
 
-  children:
-    ReactNode;
+  description:
+    string;
 }) {
   return (
     <Link
       href={
         href
       }
-      className="group rounded-[1.75rem] border border-line bg-white p-5 shadow-sm transition hover:border-brand-200 sm:p-6"
+      className="group grid gap-4 p-5 transition hover:bg-brand-50/40 sm:grid-cols-[44px_minmax(0,1fr)_auto] sm:items-center sm:p-6"
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
-          <Icon
-            name={
-              icon
-            }
-            className="h-5 w-5"
-          />
-        </div>
-
-        <span
-          className={
-            enabled
-              ? "rounded-full bg-brand-100 px-3 py-1.5 text-xs font-black text-brand-800"
-              : "rounded-full bg-canvas px-3 py-1.5 text-xs font-black text-muted"
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+        <Icon
+          name={
+            icon
           }
-        >
-          {status}
-        </span>
+          className="h-5 w-5"
+        />
       </div>
 
-      <h3 className="mt-4 font-black">
-        {label}
-      </h3>
+      <div>
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="font-black">
+            {title}
+          </h3>
 
-      <p className="mt-2 text-sm leading-6 text-muted">
-        {children}
-      </p>
+          <span
+            className={
+              enabled
+                ? "rounded-full bg-brand-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-brand-800"
+                : "rounded-full bg-canvas px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-muted"
+            }
+          >
+            {status}
+          </span>
+        </div>
 
-      <span className="mt-4 inline-flex items-center gap-2 text-sm font-black text-brand-700">
-        Ustaw widoczność
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-muted">
+          {description}
+        </p>
+      </div>
+
+      <span className="inline-flex items-center gap-2 text-sm font-black text-brand-700">
+        Zarządzaj
 
         <Icon
           name="arrow-right"
@@ -1322,6 +1280,39 @@ function PrivacyOption({
         />
       </span>
     </Link>
+  );
+}
+
+function AccountInfo({
+  label,
+  value,
+  bordered = false,
+}: {
+  label:
+    string;
+
+  value:
+    string;
+
+  bordered?:
+    boolean;
+}) {
+  return (
+    <div
+      className={
+        bordered
+          ? "border-t border-line p-5 sm:border-l sm:border-t-0 sm:p-6"
+          : "p-5 sm:p-6"
+      }
+    >
+      <p className="text-xs font-bold text-muted">
+        {label}
+      </p>
+
+      <p className="mt-1 break-all text-sm font-black text-ink">
+        {value}
+      </p>
+    </div>
   );
 }
 
