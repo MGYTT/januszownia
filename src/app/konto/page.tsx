@@ -328,6 +328,18 @@ export default async function AccountPage({
                 />
 
                 <AccountNavLink
+                  href="/konto/aktywnosc"
+                  icon="route"
+                  label="Kronika"
+                  detail={
+                    String(
+                      dashboard.placeSubmissionsCount +
+                      dashboard.placeReportsCount,
+                    )
+                  }
+                />
+
+                <AccountNavLink
                   href="/konto/osiagniecia"
                   icon="trophy"
                   label="Osiągnięcia"
@@ -543,11 +555,15 @@ export default async function AccountPage({
               />
 
               <QuickAction
-                href="/mapy/dodaj"
-                icon="map-pin"
-                eyebrow="Mapa"
-                title="Dodaj miejsce"
-                detail="Dorzuć punkt"
+                href="/konto/aktywnosc"
+                icon="route"
+                eyebrow="Kronika"
+                title="Moja aktywność"
+                detail={
+                  dashboard.placeSubmissionsCount +
+                  dashboard.placeReportsCount +
+                  " wpisów"
+                }
               />
             </div>
           </section>
@@ -764,17 +780,43 @@ export default async function AccountPage({
                     Punkty wpadają za zweryfikowany efekt, nie za samo wysłanie formularza. Tak jest uczciwiej i mniej spamersko.
                   </p>
 
-                  <Link
-                    href="/spolecznosc"
-                    className="mt-5 inline-flex items-center gap-2 text-sm font-black text-brand-700 hover:underline"
-                  >
-                    Jak działa wkład
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <Link
+                      href="/mapy/dodaj"
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-button bg-white px-4 py-2 text-xs font-black text-brand-700 shadow-sm transition hover:bg-brand-50"
+                    >
+                      Dodaj miejsce
 
-                    <Icon
-                      name="arrow-right"
-                      className="h-4 w-4"
-                    />
-                  </Link>
+                      <Icon
+                        name="map-pin"
+                        className="h-3.5 w-3.5"
+                      />
+                    </Link>
+
+                    <Link
+                      href="/konto/aktywnosc"
+                      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-button border border-accent-200 bg-white/70 px-4 py-2 text-xs font-black text-accent-700 transition hover:bg-white"
+                    >
+                      Moja Kronika
+
+                      <Icon
+                        name="route"
+                        className="h-3.5 w-3.5"
+                      />
+                    </Link>
+
+                    <Link
+                      href="/spolecznosc"
+                      className="inline-flex min-h-10 items-center gap-2 px-1 text-xs font-black text-brand-700 hover:underline"
+                    >
+                      Jak działa wkład
+
+                      <Icon
+                        name="arrow-right"
+                        className="h-3.5 w-3.5"
+                      />
+                    </Link>
+                  </div>
                 </article>
 
                 {isStaff ? (
