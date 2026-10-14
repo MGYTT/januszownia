@@ -171,6 +171,9 @@ export default async function SavedCalculationsPage({
                     title={
                       calculation.title
                     }
+                    resultSummary={
+                      calculation.resultSummary
+                    }
                     createdAt={
                       calculation.createdAt
                     }
@@ -247,6 +250,7 @@ export default async function SavedCalculationsPage({
 function SavedCalculationRow({
   id,
   title,
+  resultSummary,
   createdAt,
   toolVersion,
   tool,
@@ -256,6 +260,9 @@ function SavedCalculationRow({
     string;
 
   title:
+    string;
+
+  resultSummary:
     string;
 
   createdAt:
@@ -302,6 +309,10 @@ function SavedCalculationRow({
         <h2 className="mt-2 truncate text-lg font-black text-ink">
           {title}
         </h2>
+
+        <p className="mt-2 text-sm font-semibold leading-6 text-ink">
+          {resultSummary}
+        </p>
 
         <p className="mt-1 text-xs font-semibold text-muted">
           Zapisano{" "}
