@@ -301,6 +301,16 @@ export function PowerCostCalculator() {
           <SaveCalculationPanel
             toolSlug="pradozerca"
             toolTitle="Prądożerca"
+            resultSummary={
+              currencyFormatter.format(
+                result.totalCostPerMonthPln,
+              ) +
+              " / mies. · " +
+              currencyFormatter.format(
+                result.totalCostPerYearPln,
+              ) +
+              " / rok"
+            }
             inputData={
               form
             }
