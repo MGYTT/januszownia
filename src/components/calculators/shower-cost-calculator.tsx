@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -355,11 +359,24 @@ export function ShowerCostCalculator() {
       </form>
 
       {result ? (
-        <ShowerResult
-          result={
-            result
-          }
-        />
+        <>
+          <ShowerResult
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="prysznicometr"
+            toolTitle="Prysznicometr"
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );
