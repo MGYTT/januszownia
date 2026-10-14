@@ -98,6 +98,21 @@ export async function saveCalculation(
     };
   }
 
+  const resultSummary =
+    normalizeResultSummary(
+      payload.resultSummary,
+    );
+
+  if (!resultSummary) {
+    return {
+      status:
+        "error",
+
+      message:
+        "Nie udało się przygotować krótkiego podsumowania wyniku.",
+    };
+  }
+
   const inputData =
     normalizeJsonPayload(
       payload.inputData,
@@ -153,6 +168,9 @@ export async function saveCalculation(
           payload.toolVersion,
 
         title,
+
+        result_summary:
+          resultSummary,
 
         input_data:
           inputData.value,
@@ -278,6 +296,30 @@ function normalizeTitle(
       1 ||
     normalized.length >
       80
+  ) {
+    return null;
+  }
+
+  return normalized;
+}
+
+function normalizeResultSummary(
+  value:
+    string,
+): string | null {
+  const normalized =
+    value
+      .trim()
+      .replace(
+        /\s+/g,
+        " ",
+      );
+
+  if (
+    normalized.length <
+      1 ||
+    normalized.length >
+      200
   ) {
     return null;
   }
