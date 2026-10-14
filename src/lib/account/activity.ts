@@ -906,7 +906,7 @@ async function enrichSubmissionRows(
   }
 
   const categories =
-    new Map(
+    new Map<number, string>(
       (
         (
           categoryResult.data ??
@@ -915,31 +915,33 @@ async function enrichSubmissionRows(
       ).map(
         (
           category,
-        ) => [
-          Number(
-            category.id,
-          ),
-          category.name,
-        ],
+        ) =>
+          [
+            Number(
+              category.id,
+            ),
+            category.name,
+          ] as const,
       ),
     );
 
   const rewards =
-    new Map(
+    new Map<string, number>(
       (
         rewardResult.data ??
         []
       ).map(
         (
           reward,
-        ) => [
-          String(
-            reward.source_id,
-          ),
-          Number(
-            reward.points,
-          ),
-        ],
+        ) =>
+          [
+            String(
+              reward.source_id,
+            ),
+            Number(
+              reward.points,
+            ),
+          ] as const,
       ),
     );
 
@@ -1080,7 +1082,7 @@ async function enrichReportRows(
   }
 
   const places =
-    new Map(
+    new Map<string, string>(
       (
         (
           placesResult.data ??
@@ -1089,29 +1091,31 @@ async function enrichReportRows(
       ).map(
         (
           place,
-        ) => [
-          place.id,
-          place.name,
-        ],
+        ) =>
+          [
+            place.id,
+            place.name,
+          ] as const,
       ),
     );
 
   const rewards =
-    new Map(
+    new Map<string, number>(
       (
         rewardResult.data ??
         []
       ).map(
         (
           reward,
-        ) => [
-          String(
-            reward.source_id,
-          ),
-          Number(
-            reward.points,
-          ),
-        ],
+        ) =>
+          [
+            String(
+              reward.source_id,
+            ),
+            Number(
+              reward.points,
+            ),
+          ] as const,
       ),
     );
 
