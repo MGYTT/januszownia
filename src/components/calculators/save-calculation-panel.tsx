@@ -3,7 +3,6 @@
 import Link from "next/link";
 
 import {
-  useEffect,
   useState,
   useTransition,
 } from "react";
@@ -83,35 +82,6 @@ export function SaveCalculationPanel({
     startTransition,
   ] =
     useTransition();
-
-  useEffect(
-    () => {
-      if (
-        resultData ===
-          null ||
-        resultData ===
-          undefined
-      ) {
-        return;
-      }
-
-      setTitle(
-        defaultTitle,
-      );
-
-      setStatus(
-        "idle",
-      );
-
-      setMessage(
-        null,
-      );
-    },
-    [
-      defaultTitle,
-      resultData,
-    ],
-  );
 
   function handleSave() {
     const cleanTitle =
