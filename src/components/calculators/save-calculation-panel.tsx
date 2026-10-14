@@ -17,6 +17,7 @@ export function SaveCalculationPanel({
   toolTitle,
   inputData,
   resultData,
+  resultSummary,
   toolVersion = 1,
   suggestedTitle,
 }: {
@@ -31,6 +32,9 @@ export function SaveCalculationPanel({
 
   resultData:
     unknown;
+
+  resultSummary:
+    string;
 
   toolVersion?:
     number;
@@ -128,6 +132,7 @@ export function SaveCalculationPanel({
             toolVersion,
             title:
               cleanTitle,
+            resultSummary,
             inputData,
             resultData,
           });
