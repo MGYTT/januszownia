@@ -239,7 +239,12 @@ export function MobileNavClient({
           event.key ===
           "Escape"
         ) {
-          closeMenu();
+          setMenuState({
+            open:
+              false,
+
+            pathname,
+          });
         }
       }
 
@@ -260,6 +265,7 @@ export function MobileNavClient({
     },
     [
       menuOpen,
+      pathname,
     ],
   );
 
