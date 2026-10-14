@@ -9,6 +9,7 @@ import {
 export interface AccountDashboardSummary {
   collectionsCount: number;
   savedPlaceEntriesCount: number;
+  savedCalculationsCount: number;
 
   unlockedAchievementsCount: number;
   totalAchievementsCount: number;
@@ -40,6 +41,7 @@ export async function getAccountDashboardSummary(
   const [
     collectionsResult,
     savedPlacesResult,
+    savedCalculationsResult,
     achievementsResult,
     achievementDefinitionsResult,
     submissionsResult,
@@ -73,6 +75,25 @@ export async function getAccountDashboardSummary(
         )
         .select(
           "place_id",
+          {
+            count:
+              "exact",
+
+            head:
+              true,
+          },
+        )
+        .eq(
+          "user_id",
+          userId,
+        ),
+
+      supabase
+        .from(
+          "saved_calculations",
+        )
+        .select(
+          "id",
           {
             count:
               "exact",
@@ -200,6 +221,14 @@ export async function getAccountDashboardSummary(
   }
 
   if (
+    savedCalculationsResult.error
+  ) {
+    throw new Error(
+      "Nie udało się pobrać liczby zapisanych obliczeń.",
+    );
+  }
+
+  if (
     achievementsResult.error
   ) {
     throw new Error(
@@ -251,6 +280,10 @@ export async function getAccountDashboardSummary(
 
     savedPlaceEntriesCount:
       savedPlacesResult.count ??
+      0,
+
+    savedCalculationsCount:
+      savedCalculationsResult.count ??
       0,
 
     unlockedAchievementsCount:
