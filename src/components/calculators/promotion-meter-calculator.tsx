@@ -271,6 +271,16 @@ export function PromotionMeterCalculator() {
           <SaveCalculationPanel
             toolSlug="promocjometr"
             toolTitle="Promocjometr"
+            resultSummary={
+              formatSignedPercent(
+                result.discountPercent,
+              ) +
+              " zmiany ceny · " +
+              formatSignedCurrency(
+                result.totalSavingPln,
+              ) +
+              " łącznie"
+            }
             inputData={
               form
             }
