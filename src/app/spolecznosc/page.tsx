@@ -71,7 +71,7 @@ const communityActions: {
       "Na stronie opublikowanego miejsca możesz oznaczyć je jako aktualne albo wysłać sygnał, że informacje mogą być już nieaktualne.",
 
     detail:
-      "Jedno konto ma jeden aktualny głos dla danego miejsca i może później zmienić swoją odpowiedź.",
+      "Wymaga zalogowania. Jedno konto ma jeden aktualny głos dla danego miejsca i może później zmienić swoją odpowiedź.",
 
     href:
       "/mapy",
@@ -94,7 +94,7 @@ const communityActions: {
       "Jeśli punkt jest zamknięty, ma błędną lokalizację, złe informacje, jest duplikatem albo wymaga innej poprawki, możesz wysłać formalne zgłoszenie.",
 
     detail:
-      "Raport trafia do osobnej kolejki moderacyjnej. Samo zgłoszenie nie usuwa miejsca z mapy.",
+      "Wymaga zalogowania. Raport trafia do osobnej kolejki moderacyjnej i samo zgłoszenie nie usuwa miejsca z mapy.",
 
     href:
       "/mapy",
