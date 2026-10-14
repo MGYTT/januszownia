@@ -454,6 +454,16 @@ export function GrillCalculator() {
           <SaveCalculationPanel
             toolSlug="grillometr"
             toolTitle="Grillometr"
+            resultSummary={
+              currencyFormatter.format(
+                result.totalCostPln,
+              ) +
+              " łącznie · " +
+              currencyFormatter.format(
+                result.costPerGuestPln,
+              ) +
+              " / os."
+            }
             inputData={
               form
             }
