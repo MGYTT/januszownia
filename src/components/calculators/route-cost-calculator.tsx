@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -404,11 +408,24 @@ export default function RouteCostCalculator() {
       </form>
 
       {result ? (
-        <RouteCostResultView
-          result={
-            result
-          }
-        />
+        <>
+          <RouteCostResultView
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="kalkulator-trasy"
+            toolTitle="Kalkulator Trasy Janusza"
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );
