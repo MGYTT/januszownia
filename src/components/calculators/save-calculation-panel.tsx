@@ -86,6 +86,15 @@ export function SaveCalculationPanel({
 
   useEffect(
     () => {
+      if (
+        resultData ===
+          null ||
+        resultData ===
+          undefined
+      ) {
+        return;
+      }
+
       setTitle(
         defaultTitle,
       );
