@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -257,11 +261,34 @@ export function PromotionMeterCalculator() {
       </form>
 
       {result ? (
-        <PromotionResult
-          result={
-            result
-          }
-        />
+        <>
+          <PromotionResult
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="promocjometr"
+            toolTitle="Promocjometr"
+            resultSummary={
+              formatSignedPercent(
+                result.discountPercent,
+              ) +
+              " zmiany ceny · " +
+              formatSignedCurrency(
+                result.totalSavingPln,
+              ) +
+              " łącznie"
+            }
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );

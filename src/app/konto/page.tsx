@@ -328,6 +328,17 @@ export default async function AccountPage({
                 />
 
                 <AccountNavLink
+                  href="/konto/obliczenia"
+                  icon="calculator"
+                  label="Obliczenia"
+                  detail={
+                    String(
+                      dashboard.savedCalculationsCount,
+                    )
+                  }
+                />
+
+                <AccountNavLink
                   href="/konto/aktywnosc"
                   icon="route"
                   label="Kronika"
@@ -491,14 +502,11 @@ export default async function AccountPage({
               />
 
               <OverviewMetric
-                label="Osiągnięcia"
+                label="Zapisane obliczenia"
                 value={
-                  dashboard.unlockedAchievementsCount
+                  dashboard.savedCalculationsCount
                 }
-                detail={
-                  "z " +
-                  dashboard.totalAchievementsCount
-                }
+                detail="prywatnych zapisów"
               />
 
               <OverviewMetric

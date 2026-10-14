@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -281,11 +285,30 @@ export function FuelTripCalculator() {
       </form>
 
       {result ? (
-        <FuelResult
-          result={
-            result
-          }
-        />
+        <>
+          <FuelResult
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="oplaca-sie-tankowac"
+            toolTitle="OpłacaSięTankować?"
+            resultSummary={
+              currencyFormatter.format(
+                result.netSavingPln,
+              ) +
+              " bilansu netto"
+            }
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );

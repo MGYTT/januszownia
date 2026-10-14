@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -249,11 +253,34 @@ export function WorkTimeCostCalculator() {
       </form>
 
       {result ? (
-        <WorkTimeResult
-          result={
-            result
-          }
-        />
+        <>
+          <WorkTimeResult
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="ile-na-to-robisz"
+            toolTitle="IleNaToRobisz?"
+            resultSummary={
+              formatWorkTime(
+                result.workMinutesRequired,
+              ) +
+              " pracy · " +
+              currencyFormatter.format(
+                result.hourlyNetIncomePln,
+              ) +
+              " / godz."
+            }
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );

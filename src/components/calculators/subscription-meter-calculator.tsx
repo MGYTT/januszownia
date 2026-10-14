@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -521,14 +525,45 @@ export function SubscriptionMeterCalculator() {
       </form>
 
       {result ? (
-        <SubscriptionResult
-          result={
-            result
-          }
-          subscriptionName={
-            form.subscriptionName
-          }
-        />
+        <>
+          <SubscriptionResult
+            result={
+              result
+            }
+            subscriptionName={
+              form.subscriptionName
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="abonamentometr"
+            toolTitle="Abonamentometr"
+            resultSummary={
+              currencyFormatter.format(
+                result.totalCostPln,
+              ) +
+              " / " +
+              result.analysisMonths +
+              " mies. · " +
+              currencyFormatter.format(
+                result.averageMonthlyCostPln,
+              ) +
+              " / mies."
+            }
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+            suggestedTitle={
+              form.subscriptionName.trim()
+                ? "Abonament: " +
+                  form.subscriptionName.trim()
+                : "Abonamentometr"
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );

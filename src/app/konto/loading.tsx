@@ -35,7 +35,7 @@ export default function AccountLoading() {
 
             <div className="border-t border-white/10 bg-black/10 p-3">
               {Array.from({
-                length: 7,
+                length: 8,
               }).map(
                 (
                   _,
