@@ -418,6 +418,16 @@ export default function RouteCostCalculator() {
           <SaveCalculationPanel
             toolSlug="kalkulator-trasy"
             toolTitle="Kalkulator Trasy Janusza"
+            resultSummary={
+              currencyFormatter.format(
+                result.totalCostPln,
+              ) +
+              " za trasę · " +
+              currencyFormatter.format(
+                result.costPerTravelerPln,
+              ) +
+              " / os."
+            }
             inputData={
               form
             }
