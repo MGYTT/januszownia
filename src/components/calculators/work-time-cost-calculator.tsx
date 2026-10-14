@@ -263,6 +263,16 @@ export function WorkTimeCostCalculator() {
           <SaveCalculationPanel
             toolSlug="ile-na-to-robisz"
             toolTitle="IleNaToRobisz?"
+            resultSummary={
+              formatWorkTime(
+                result.workMinutesRequired,
+              ) +
+              " pracy · " +
+              currencyFormatter.format(
+                result.hourlyNetIncomePln,
+              ) +
+              " / godz."
+            }
             inputData={
               form
             }
