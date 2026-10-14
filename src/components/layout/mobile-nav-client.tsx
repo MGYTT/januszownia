@@ -178,23 +178,44 @@ export function MobileNavClient({
     usePathname();
 
   const [
-    menuOpen,
-    setMenuOpen,
+    menuState,
+    setMenuState,
   ] =
-    useState(
-      false,
-    );
+    useState<{
+      open:
+        boolean;
 
-  useEffect(
-    () => {
-      setMenuOpen(
+      pathname:
+        string;
+    }>({
+      open:
         false,
-      );
-    },
-    [
+
       pathname,
-    ],
-  );
+    });
+
+  const menuOpen =
+    menuState.open &&
+    menuState.pathname ===
+      pathname;
+
+  function closeMenu() {
+    setMenuState({
+      open:
+        false,
+
+      pathname,
+    });
+  }
+
+  function toggleMenu() {
+    setMenuState({
+      open:
+        !menuOpen,
+
+      pathname,
+    });
+  }
 
   useEffect(
     () => {
@@ -218,9 +239,7 @@ export function MobileNavClient({
           event.key ===
           "Escape"
         ) {
-          setMenuOpen(
-            false,
-          );
+          closeMenu();
         }
       }
 
@@ -266,10 +285,7 @@ export function MobileNavClient({
             loggedIn
           }
           onClose={
-            () =>
-              setMenuOpen(
-                false,
-              )
+            closeMenu
           }
         />
       ) : null}
@@ -339,13 +355,7 @@ export function MobileNavClient({
             }
             aria-controls="mobile-more-menu"
             onClick={
-              () =>
-                setMenuOpen(
-                  (
-                    current,
-                  ) =>
-                    !current,
-                )
+              toggleMenu
             }
             className={
               mobileItemClass(
