@@ -265,6 +265,18 @@ export function UnitPriceCalculator() {
           <SaveCalculationPanel
             toolSlug="cena-jednostkowa"
             toolTitle="Cena Jednostkowa"
+            resultSummary={
+              result.winner ===
+              "tie"
+                ? "Remis ceny jednostkowej"
+                : "Produkt " +
+                  result.winner.toUpperCase() +
+                  " wygrywa o " +
+                  percentFormatter.format(
+                    result.betterValuePercent,
+                  ) +
+                  "%"
+            }
             inputData={
               form
             }
