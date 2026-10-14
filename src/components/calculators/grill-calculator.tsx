@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+  SaveCalculationPanel,
+} from "@/components/calculators/save-calculation-panel";
+
+import {
   CalculatorActions,
   CalculatorError,
   CalculatorField,
@@ -440,11 +444,24 @@ export function GrillCalculator() {
       </form>
 
       {result ? (
-        <GrillResultView
-          result={
-            result
-          }
-        />
+        <>
+          <GrillResultView
+            result={
+              result
+            }
+          />
+
+          <SaveCalculationPanel
+            toolSlug="grillometr"
+            toolTitle="Grillometr"
+            inputData={
+              form
+            }
+            resultData={
+              result
+            }
+          />
+        </>
       ) : null}
     </CalculatorShell>
   );
