@@ -1,6 +1,11 @@
 import Link from "next/link";
 
+import type {
+  ReactNode,
+} from "react";
+
 import { PortalSearch } from "@/components/home/portal-search";
+
 import {
   Icon,
   type IconName,
@@ -15,32 +20,59 @@ interface Goal {
 
 const goals: Goal[] = [
   {
-    title: "Chcę zaoszczędzić",
+    title:
+      "Chcę zaoszczędzić",
+
     description:
-      "Porównuj ceny i korzystaj z praktycznych przeliczników.",
-    href: "/narzedzia",
-    icon: "wallet",
+      "Porównaj koszty i sprawdź, gdzie matematyka faktycznie daje oszczędność.",
+
+    href:
+      "/narzedzia",
+
+    icon:
+      "wallet",
   },
+
   {
-    title: "Chcę coś policzyć",
+    title:
+      "Chcę coś policzyć",
+
     description:
-      "Kalkulatory z prawdziwymi wzorami i jasnym wynikiem.",
-    href: "/narzedzia",
-    icon: "calculator",
+      "Kalkulatory z własną logiką, walidacją i czytelnym wynikiem.",
+
+    href:
+      "/narzedzia",
+
+    icon:
+      "calculator",
   },
+
   {
-    title: "Szukam w okolicy",
+    title:
+      "Szukam miejsca",
+
     description:
-      "Mapy parkingów, wody, jedzenia i innych przydatnych miejsc.",
-    href: "/mapy",
-    icon: "map-pin",
+      "Parking, woda, toaleta, jedzenie i inne praktyczne punkty na mapie.",
+
+    href:
+      "/mapy",
+
+    icon:
+      "map-pin",
   },
+
   {
-    title: "Przyszedłem dla beki",
+    title:
+      "Chcę pomóc",
+
     description:
-      "Januszometr i kolejne cebulowe atrakcje.",
-    href: "/rozrywka",
-    icon: "smile",
+      "Dodaj miejsce, potwierdź aktualność albo zgłoś problem z danymi.",
+
+    href:
+      "/spolecznosc",
+
+    icon:
+      "users",
   },
 ];
 
@@ -51,9 +83,9 @@ export function Hero() {
 
       <div className="pointer-events-none absolute -left-40 top-72 h-80 w-80 rounded-full bg-accent-100/40 blur-3xl" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:pb-24 lg:pt-20">
+      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 pb-14 pt-12 sm:px-6 sm:pb-16 sm:pt-16 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:pb-20 lg:pt-20">
         <div>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3 py-1.5 text-sm font-bold text-brand-700 shadow-sm">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3 py-1.5 text-sm font-black text-brand-700 shadow-sm">
             <span aria-hidden="true">
               🧅
             </span>
@@ -73,8 +105,8 @@ export function Hero() {
             Mapy, kalkulatory,
             społeczność i trochę
             kontrolowanego januszowania.
-            Najpierw użyteczność, później
-            żarty.
+            Najpierw użyteczność,
+            później żarty.
           </p>
 
           <div className="mt-8">
@@ -82,37 +114,47 @@ export function Hero() {
           </div>
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4">
-            {goals.map((goal) => (
-              <Link
-                key={goal.title}
-                href={goal.href}
-                className="group rounded-card border border-line bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-card sm:p-5"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700 sm:h-11 sm:w-11">
-                  <Icon
-                    name={goal.icon}
-                    className="h-5 w-5"
-                  />
-                </div>
+            {goals.map(
+              (
+                goal,
+              ) => (
+                <Link
+                  key={
+                    goal.title
+                  }
+                  href={
+                    goal.href
+                  }
+                  className="group rounded-card border border-line bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-card sm:p-5"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700 sm:h-11 sm:w-11">
+                    <Icon
+                      name={
+                        goal.icon
+                      }
+                      className="h-5 w-5"
+                    />
+                  </div>
 
-                <h2 className="mt-4 text-sm font-black leading-snug sm:text-base">
-                  {goal.title}
-                </h2>
+                  <h2 className="mt-4 text-sm font-black leading-snug sm:text-base">
+                    {goal.title}
+                  </h2>
 
-                <p className="mt-1.5 hidden text-sm leading-6 text-muted sm:block">
-                  {goal.description}
-                </p>
+                  <p className="mt-1.5 hidden text-sm leading-6 text-muted sm:block">
+                    {goal.description}
+                  </p>
 
-                <span className="mt-4 hidden items-center gap-1.5 text-sm font-bold text-brand-700 sm:inline-flex">
-                  Otwórz
+                  <span className="mt-4 hidden items-center gap-1.5 text-sm font-black text-brand-700 sm:inline-flex">
+                    Otwórz
 
-                  <Icon
-                    name="arrow-right"
-                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                  />
-                </span>
-              </Link>
-            ))}
+                    <Icon
+                      name="arrow-right"
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                    />
+                  </span>
+                </Link>
+              ),
+            )}
           </div>
         </div>
 
@@ -138,31 +180,46 @@ export function Hero() {
               <div className="mt-6 space-y-5">
                 <QualityPoint
                   number="01"
-                  title="Obliczenia mają wzory"
+                  title="Obliczenia mają zasady"
                 >
-                  Wynik kalkulatora
-                  pochodzi z kodu i
-                  jawnych założeń.
+                  Kalkulatory pracują
+                  na konkretnych danych
+                  wejściowych, własnej
+                  logice i walidacji.
                 </QualityPoint>
 
                 <QualityPoint
                   number="02"
-                  title="Dane mają źródło"
+                  title="Mapa ma moderację"
                 >
-                  Miejsca, ceny i okazje
-                  będą miały informację
-                  o aktualności.
+                  Nowe miejsca nie
+                  pojawiają się
+                  publicznie bez
+                  procesu weryfikacji.
                 </QualityPoint>
 
                 <QualityPoint
                   number="03"
-                  title="Humor nie przeszkadza"
+                  title="Prywatność jest wyborem"
                 >
-                  Żart nigdy nie może
-                  ukrywać ważnej
-                  informacji.
+                  Publiczny profil i
+                  udział w rankingu są
+                  ustawieniami
+                  dobrowolnymi.
                 </QualityPoint>
               </div>
+
+              <Link
+                href="/o-projekcie"
+                className="mt-7 inline-flex items-center gap-2 text-sm font-black text-brand-700 hover:underline"
+              >
+                Jak budujemy Januszownię
+
+                <Icon
+                  name="arrow-right"
+                  className="h-4 w-4"
+                />
+              </Link>
             </div>
           </div>
         </aside>
@@ -171,17 +228,20 @@ export function Hero() {
   );
 }
 
-interface QualityPointProps {
-  number: string;
-  title: string;
-  children: React.ReactNode;
-}
-
 function QualityPoint({
   number,
   title,
   children,
-}: QualityPointProps) {
+}: {
+  number:
+    string;
+
+  title:
+    string;
+
+  children:
+    ReactNode;
+}) {
   return (
     <div className="flex gap-4">
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-black text-brand-700">
