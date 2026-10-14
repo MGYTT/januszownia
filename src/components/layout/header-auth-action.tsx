@@ -1,8 +1,16 @@
 import Link from "next/link";
-import { connection } from "next/server";
 
-import { Icon } from "@/components/ui/icon";
-import { createClient } from "@/lib/supabase/server";
+import {
+  connection,
+} from "next/server";
+
+import {
+  Icon,
+} from "@/components/ui/icon";
+
+import {
+  createClient,
+} from "@/lib/supabase/server";
 
 export async function HeaderAuthAction() {
   /*
@@ -15,14 +23,20 @@ export async function HeaderAuthAction() {
    */
   await connection();
 
-  const supabase = await createClient();
+  const supabase =
+    await createClient();
 
-  const { data, error } =
+  const {
+    data,
+    error,
+  } =
     await supabase.auth.getClaims();
 
   const loggedIn =
     !error &&
-    Boolean(data?.claims?.sub);
+    Boolean(
+      data?.claims?.sub,
+    );
 
   return (
     <Link
@@ -31,15 +45,28 @@ export async function HeaderAuthAction() {
           ? "/konto"
           : "/logowanie"
       }
-      className="inline-flex min-h-11 items-center gap-2 rounded-button bg-brand-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700"
+      aria-label={
+        loggedIn
+          ? "Otwórz moje konto"
+          : "Zaloguj się do Januszowni"
+      }
+      className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-button bg-brand-600 px-3 py-2 text-xs font-black text-white shadow-sm transition hover:bg-brand-700 sm:min-h-11 sm:gap-2 sm:px-4 sm:py-2.5 sm:text-sm"
     >
-      {loggedIn
-        ? "Moje konto"
-        : "Zaloguj"}
+      <span className="sm:hidden">
+        {loggedIn
+          ? "Konto"
+          : "Zaloguj"}
+      </span>
+
+      <span className="hidden sm:inline">
+        {loggedIn
+          ? "Moje konto"
+          : "Zaloguj"}
+      </span>
 
       <Icon
         name="arrow-right"
-        className="h-4 w-4"
+        className="h-3.5 w-3.5 sm:h-4 sm:w-4"
       />
     </Link>
   );
