@@ -478,7 +478,7 @@ export default async function AccountPage({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 border-t border-line bg-canvas lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-px border-t border-line bg-line lg:grid-cols-4">
               <OverviewMetric
                 label="Zapisane miejsca"
                 value={
@@ -1117,7 +1117,7 @@ function OverviewMetric({
     string;
 }) {
   return (
-    <div className="border-b border-line p-4 last:border-b-0 even:border-l sm:p-5 lg:border-b-0 lg:border-l lg:first:border-l-0">
+    <div className="bg-canvas p-4 sm:p-5">
       <p className="text-xs font-bold text-muted">
         {label}
       </p>
