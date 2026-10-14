@@ -1,7 +1,18 @@
 export default function AccountLoading() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
-      <div className="animate-pulse space-y-8">
+    <div
+      aria-busy="true"
+      aria-label="Ładowanie konta"
+      className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-14"
+    >
+      <span className="sr-only">
+        Ładowanie panelu konta…
+      </span>
+
+      <div
+        aria-hidden="true"
+        className="space-y-8 motion-safe:animate-pulse"
+      >
         <section className="rounded-[2rem] border border-line bg-white p-6 shadow-card sm:p-8">
           <div className="flex items-start gap-5">
             <div className="h-16 w-16 shrink-0 rounded-2xl bg-canvas sm:h-20 sm:w-20" />
