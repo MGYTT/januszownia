@@ -1,15 +1,22 @@
 "use client";
 
 import Link from "next/link";
+
 import {
   type FormEvent,
   useMemo,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
+
+import {
+  useRouter,
+} from "next/navigation";
 
 import { Icon } from "@/components/ui/icon";
-import { getAvailableTools } from "@/lib/tools/catalog";
+
+import {
+  getAvailableTools,
+} from "@/lib/tools/catalog";
 
 interface SearchEntry {
   id: string;
@@ -21,42 +28,125 @@ interface SearchEntry {
 
 const portalSections: SearchEntry[] = [
   {
-    id: "mapy",
-    title: "Mapy Januszowni",
+    id:
+      "narzedzia",
+
+    title:
+      "Wszystkie narzędzia",
+
     description:
-      "Parkingi, woda, toalety, jedzenie i inne przydatne miejsca.",
-    href: "/mapy",
+      "Pełny katalog kalkulatorów i praktycznych przeliczników Januszowni.",
+
+    href:
+      "/narzedzia",
+
+    keywords: [
+      "narzędzia",
+      "narzedzia",
+      "kalkulator",
+      "kalkulatory",
+      "liczenie",
+      "koszt",
+      "oszczędność",
+      "oszczednosc",
+    ],
+  },
+
+  {
+    id:
+      "mapy",
+
+    title:
+      "Mapa Cebularza",
+
+    description:
+      "Parkingi, woda, toalety, jedzenie, darmowe miejsca, targowiska i kolejne praktyczne punkty.",
+
+    href:
+      "/mapy",
+
     keywords: [
       "mapa",
+      "mapy",
       "parking",
       "toaleta",
+      "kibel",
       "woda",
       "miejsce",
       "okolica",
       "jedzenie",
+      "targ",
+      "targowisko",
+      "darmowe",
     ],
   },
+
   {
-    id: "spolecznosc",
-    title: "Społeczność",
+    id:
+      "spolecznosc",
+
+    title:
+      "Społeczność",
+
     description:
-      "Zgłoszenia, poprawki, potwierdzenia i aktywność użytkowników.",
-    href: "/spolecznosc",
+      "Dodawanie miejsc, potwierdzanie aktualności, zgłaszanie problemów i reputacja.",
+
+    href:
+      "/spolecznosc",
+
     keywords: [
       "społeczność",
+      "spolecznosc",
       "użytkownicy",
-      "miejsce",
-      "opinie",
+      "uzytkownicy",
       "zgłoszenie",
-      "ranking",
+      "zgloszenie",
+      "potwierdzenie",
+      "aktualność",
+      "moderacja",
+      "cebuliony",
+      "reputacja",
     ],
   },
+
   {
-    id: "rozrywka",
-    title: "Rozrywka",
+    id:
+      "ranking",
+
+    title:
+      "Ranking Cebularzy",
+
     description:
-      "Januszometr i cebulowa część portalu.",
-    href: "/rozrywka",
+      "Dobrowolny publiczny ranking Cebulionów, poziomów i wkładu społeczności.",
+
+    href:
+      "/ranking",
+
+    keywords: [
+      "ranking",
+      "cebuliony",
+      "punkty",
+      "poziom",
+      "reputacja",
+      "osiągnięcia",
+      "osiagniecia",
+      "profil",
+    ],
+  },
+
+  {
+    id:
+      "rozrywka",
+
+    title:
+      "Strefa Beki",
+
+    description:
+      "Januszometr i lżejsza, rozrywkowa część portalu.",
+
+    href:
+      "/rozrywka",
+
     keywords: [
       "gra",
       "gry",
@@ -64,18 +154,62 @@ const portalSections: SearchEntry[] = [
       "zabawa",
       "generator",
       "test",
+      "beka",
+      "rozrywka",
+    ],
+  },
+
+  {
+    id:
+      "o-projekcie",
+
+    title:
+      "O projekcie",
+
+    description:
+      "Jak działa Januszownia, jakie ma zasady i w jaki sposób rozwijamy portal.",
+
+    href:
+      "/o-projekcie",
+
+    keywords: [
+      "projekt",
+      "o projekcie",
+      "jak działa",
+      "jak dziala",
+      "zasady",
+      "januszownia",
+      "prywatność",
+      "prywatnosc",
     ],
   },
 ];
 
 const toolEntries: SearchEntry[] =
-  getAvailableTools().map((tool) => ({
-    id: tool.slug,
-    title: tool.title,
-    description: tool.description,
-    href: tool.href!,
-    keywords: tool.keywords,
-  }));
+  getAvailableTools().map(
+    (
+      tool,
+    ) => ({
+      id:
+        tool.slug,
+
+      title:
+        tool.title,
+
+      description:
+        tool.description,
+
+      href:
+        tool.href!,
+
+      keywords: [
+        ...tool.keywords,
+        tool.category,
+        tool.shortTitle,
+        tool.memeLine,
+      ],
+    }),
+  );
 
 const searchEntries: SearchEntry[] = [
   ...toolEntries,
@@ -83,58 +217,91 @@ const searchEntries: SearchEntry[] = [
 ];
 
 function normalize(
-  value: string,
+  value:
+    string,
 ): string {
   return value
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
+    .normalize(
+      "NFD",
+    )
+    .replace(
+      /\p{Diacritic}/gu,
+      "",
+    )
     .toLowerCase()
     .trim();
 }
 
 export function PortalSearch() {
-  const router = useRouter();
+  const router =
+    useRouter();
 
-  const [query, setQuery] =
-    useState("");
+  const [
+    query,
+    setQuery,
+  ] =
+    useState(
+      "",
+    );
 
-  const results = useMemo(() => {
-    const normalizedQuery =
-      normalize(query);
-
-    if (
-      normalizedQuery.length < 2
-    ) {
-      return [];
-    }
-
-    return searchEntries
-      .filter((entry) => {
-        const searchable =
+  const results =
+    useMemo(
+      () => {
+        const normalizedQuery =
           normalize(
-            [
-              entry.title,
-              entry.description,
-              ...entry.keywords,
-            ].join(" "),
+            query,
           );
 
-        return searchable.includes(
-          normalizedQuery,
-        );
-      })
-      .slice(0, 6);
-  }, [query]);
+        if (
+          normalizedQuery.length <
+          2
+        ) {
+          return [];
+        }
+
+        return searchEntries
+          .filter(
+            (
+              entry,
+            ) => {
+              const searchable =
+                normalize(
+                  [
+                    entry.title,
+                    entry.description,
+                    ...entry.keywords,
+                  ].join(
+                    " ",
+                  ),
+                );
+
+              return searchable.includes(
+                normalizedQuery,
+              );
+            },
+          )
+          .slice(
+            0,
+            6,
+          );
+      },
+      [
+        query,
+      ],
+    );
 
   function handleSubmit(
-    event: FormEvent<HTMLFormElement>,
+    event:
+      FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault();
 
     const firstResult =
       results[0];
 
-    if (firstResult) {
+    if (
+      firstResult
+    ) {
       router.push(
         firstResult.href,
       );
@@ -144,7 +311,9 @@ export function PortalSearch() {
   return (
     <div className="relative w-full max-w-2xl">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={
+          handleSubmit
+        }
         role="search"
       >
         <label
@@ -163,25 +332,34 @@ export function PortalSearch() {
           <input
             id="portal-search"
             type="search"
-            value={query}
-            onChange={(event) =>
-              setQuery(
-                event.target.value,
-              )
+            value={
+              query
             }
-            placeholder="Np. pizza, paliwo, parking..."
+            onChange={
+              (
+                event,
+              ) =>
+                setQuery(
+                  event.target.value,
+                )
+            }
+            placeholder="Np. abonament, paliwo, parking, ranking..."
             autoComplete="off"
             className="h-14 w-full rounded-2xl border border-line bg-white pl-12 pr-4 text-[16px] text-ink shadow-sm outline-none transition placeholder:text-subtle focus:border-brand-300 focus:ring-4 focus:ring-brand-100"
           />
         </div>
       </form>
 
-      {query.trim().length >= 2 ? (
+      {query.trim().length >=
+      2 ? (
         <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-30 overflow-hidden rounded-2xl border border-line bg-white shadow-card">
-          {results.length > 0 ? (
+          {results.length >
+          0 ? (
             <div className="p-2">
               {results.map(
-                (result) => (
+                (
+                  result,
+                ) => (
                   <Link
                     key={
                       result.id
@@ -215,15 +393,16 @@ export function PortalSearch() {
             </div>
           ) : (
             <div className="p-5">
-              <p className="font-bold">
+              <p className="font-black">
                 Panie, nic takiego
                 jeszcze nie mamy.
               </p>
 
-              <p className="mt-1 text-sm text-muted">
-                Spróbuj „pizza”,
-                „paliwo”, „parking”
-                albo „Januszometr”.
+              <p className="mt-1 text-sm leading-6 text-muted">
+                Spróbuj „abonament”,
+                „paliwo”, „parking”,
+                „ranking” albo
+                „Januszometr”.
               </p>
             </div>
           )}
