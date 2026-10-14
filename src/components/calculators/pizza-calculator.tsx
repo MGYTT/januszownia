@@ -249,6 +249,18 @@ export function PizzaCalculator() {
           <SaveCalculationPanel
             toolSlug="pizza-na-cebule"
             toolTitle="Pizza na Cebulę"
+            resultSummary={
+              result.winner ===
+              "tie"
+                ? "Remis ceny za 100 cm²"
+                : "Pizza " +
+                  result.winner.toUpperCase() +
+                  " wygrywa o " +
+                  numberFormatter.format(
+                    result.betterValuePercent,
+                  ) +
+                  "%"
+            }
             inputData={
               form
             }
