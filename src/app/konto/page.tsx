@@ -153,14 +153,18 @@ export default async function AccountPage({
       "admin";
 
   const displayName =
-    profile.display_name ??
-    profile.username ??
+    profile.display_name
+      ?.trim() ||
+    profile.username
+      ?.trim() ||
     "Janusz";
 
   const profileReady =
     Boolean(
-      profile.display_name &&
-      profile.username,
+      profile.display_name
+        ?.trim() &&
+      profile.username
+        ?.trim(),
     );
 
   const recentReputation =
@@ -400,7 +404,7 @@ export default async function AccountPage({
                     className="flex min-h-11 w-full items-center justify-between rounded-xl px-3 text-left text-sm font-black text-brand-100 transition hover:bg-white/10 hover:text-white"
                   >
                     <span>
-                      Zamknij interes
+                      Wyloguj się
                     </span>
 
                     <span
