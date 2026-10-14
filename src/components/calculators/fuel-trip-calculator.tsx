@@ -295,6 +295,12 @@ export function FuelTripCalculator() {
           <SaveCalculationPanel
             toolSlug="oplaca-sie-tankowac"
             toolTitle="OpłacaSięTankować?"
+            resultSummary={
+              currencyFormatter.format(
+                result.netSavingPln,
+              ) +
+              " bilansu netto"
+            }
             inputData={
               form
             }
